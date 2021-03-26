@@ -1,4 +1,4 @@
-import obdEmulator
+# import obdEmulator as obd
 
 # connection = obdEmulator.OBD()
 # connection.query(obdEmulator.commands.RPM)
@@ -8,18 +8,18 @@ import obdEmulator
 
 import argparse
 # import obd
+import obdEmulator as obd
 import time
 
 # a callback that prints every new value to the console
 def new_rpm(r):
-    print(r.value)
+    # print(r.value)
+    print(f' Na callback: {r}')
 
 def main(mode):
     if mode == 0:
-        pass
+        connection = obd.Async()
     elif mode == 1:
-        ports = obd.scan_serial()      
-        print(ports) 
         connection = obd.Async("/dev/tty.OBDLinkMX68078-STN-SPP")
 
     connection.watch(obd.commands.RPM, callback=new_rpm)
@@ -27,7 +27,7 @@ def main(mode):
 
     # the callback will now be fired upon receipt of new values
 
-    time.sleep(120)
+    time.sleep(10)
     connection.stop()
 
 
