@@ -43,15 +43,15 @@ class Async(OBD):
             self.__thread = None
             print("Async thread stopped")
 
-    # def paused(self):
-    # """
-    #     A stub function for semantic purposes only
-    #     enables code such as:
+    def paused(self):
+        """
+            A stub function for semantic purposes only
+            enables code such as:
 
-    #     with connection.paused() as was_running
-    #         ...
-    # """
-    # return self
+            with connection.paused() as was_running
+                ...
+        """
+        return self
 
     def __enter__(self):
         """
