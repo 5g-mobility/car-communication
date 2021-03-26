@@ -16,6 +16,10 @@ def new_rpm(r):
     # print(r.value)
     print(f' Na callback: {r}')
 
+def callback_speed(r):
+    # print(r.value)
+    print(f' Na callback: {r}')
+
 def main(mode):
     if mode == 0:
         connection = obd.Async()
@@ -23,6 +27,7 @@ def main(mode):
         connection = obd.Async("/dev/tty.OBDLinkMX68078-STN-SPP")
 
     connection.watch(obd.commands.RPM, callback=new_rpm)
+    connection.watch(obd.commands.SPEED, callback=callback_speed)
     connection.start()
 
     # the callback will now be fired upon receipt of new values
