@@ -4,8 +4,11 @@ from enum import Enum
 Enumerate with commands available
 """
 class commands(Enum):
-    RPM = 1
-    SPEED = 2
+    RPM = 12
+    SPEED = 13
+    RUN_TIME = 31
+    AMBIANT_AIR_TEMP = 70
+
 
 """
 Class with the main functionalities
@@ -14,9 +17,13 @@ class OBD:
 
     def __init__(self):
         print('Conexão com dispositivo mágico efetuado com sucesso! Pronto para emular')
-        print(repr(commands.RPM))
+
+    def query(self, command):
+        print('efetuando query')
+        pass
 
 
 
 if __name__ == '__main__':
-    emulator = OBD()
+    connection = OBD()
+    connection.query(commands.RPM)
