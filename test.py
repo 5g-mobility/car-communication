@@ -13,12 +13,10 @@ import time
 
 # a callback that prints every new value to the console
 def new_rpm(r):
-    # print(r.value)
-    print(f' Na callback: {r}')
+    print(f' Na callback: {r.value}')
 
 def callback_speed(r):
-    # print(r.value)
-    print(f' Na callback: {r}')
+    print(f' Na callback: {r.value}')
 
 def main(mode):
     if mode == 0:

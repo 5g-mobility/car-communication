@@ -1,13 +1,22 @@
+import time
+from .commands import commands
+
 """
 Object returned by the query() function
 """
 class OBDResponse:
-    def __init__(self, value=None, command=None, message=None, time=None):
+    def __init__(self, value=None, command=None):
         self.value = value
         self.command = command
-        self.message = message
-        self.time = time
+        self.time = time.time()
+
+    # TODO
+    @property
+    def unit(self):
+        pass
 
     def is_null(self):
-        if self.value is None:
-            return True
+        return self.value is None
+
+    def __str__(self):
+        return str(self.value)

@@ -4,6 +4,10 @@ Class with the main functionalities
 """
 import time
 from .commands import commands
+from .OBDResponse import OBDResponse
+
+### TODO APAGAR
+import random
 
 class OBD:
 
@@ -16,20 +20,19 @@ class OBD:
 
     """ make query to car """
     def query(self, command):
+        self.__last_command = command
+
         if command == commands.RPM:
-            print('rpm')
-            return 'rpm'
+            return OBDResponse(random.randint(0, 8000), command)
         elif command == commands.SPEED:
-            print('speed')
-            return 'speed'
+            return OBDResponse(random.randint(0, 150), command)
         elif command == commands.RUN_TIME:
-            print('run_time')
-            return 'run_time'
+            return OBDResponse(random.randint(0, 60), command)
         elif command == commands.AMBIANT_AIT_TEMP:
-            print('ambient_air_temp')
-            return 'ambient_ait_temp'
+            return OBDResponse(random.randint(10, 35), command)
         else:
             print('Unknown command')
+            return OBDResponse()
         
         time.sleep(0.5)
         
