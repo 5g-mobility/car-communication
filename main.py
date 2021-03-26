@@ -7,21 +7,21 @@ def new_rpm(r):
     print(r.value)
 
 def main(mode):
+    # turn on debug mode
+    obd.logger.setLevel(obd.logging.DEBUG)
     if mode == 0:
-        pass
+        connection = car_emulator.Async()
     elif mode == 1:
-        ports = obd.scan_serial()      
-        print(ports) 
-        connection = obd.Async("/dev/tty.OBDLinkMX68078-STN-SPP")
+        connection = obd.OBD("/dev/tty.OBDLinkMX68078-STN-SPP")
 
     connection.watch(obd.commands.RPM, callback=new_rpm)
+    
     connection.start()
 
     # the callback will now be fired upon receipt of new values
 
     time.sleep(120)
     connection.stop()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
