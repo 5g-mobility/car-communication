@@ -3,12 +3,11 @@
 Class with the main functionalities
 """
 import time
+import random
 from .commands import commands
 from .response_generator import ResponseGenerator
 from .OBDResponse import OBDResponse
 
-### TODO APAGAR
-import random
 
 class OBDEmulator:
 
@@ -33,11 +32,11 @@ class OBDEmulator:
         elif command == commands.AMBIANT_AIR_TEMP:
             return OBDResponse(random.randint(10, 35), command)
         elif command == commands.LIGHT_SENSOR:
-            return OBDResponse(random.randint(10, 35), command)
+            return OBDResponse(self.response_generator.get_light_sensor(), command)
         elif command == commands.FOG_LIGHTS:
-            return OBDResponse(random.randint(10, 35), command)
+            return OBDResponse(self.response_generator.get_fog_light_sensor(), command)
         elif command == commands.RAIN_SENSOR:
-            return OBDResponse(random.randint(10, 35), command)
+            return OBDResponse(self.response_generator.get_rain_sensor(), command)
         elif command == commands.AVG_CONSUMPTION:
             return OBDResponse(random.uniform(5.0, 15.0), command)
         else:
