@@ -1,6 +1,7 @@
 import time
 import geocoder
 import requests
+import datetime
 
 class ResponseGenerator:
 
@@ -11,17 +12,20 @@ class ResponseGenerator:
         self.rain_probability = None
         self.update_sun()
         self.update_weather()
-        self.last_update = time.localtime()
+        self.last_update = datetime.datetime.utcnow()
 
     def update_sun(self):
         g = geocoder.ip('me')
         lat = g.latlng[0]
         lng = g.latlng[1]
         data = self.request_json('https://api.sunrise-sunset.org/json', dict(lat=lat, lng=lng))
-        print(data)
+        self.sunrise = datetime.datetime.strptime(data['results']['sunrise'], '%I:%M:%S %p')
+        self.sunset = datetime.datetime.strptime(data['results']['sunset'], '%I:%M:%S %p')
+        print(self.sunrise)
+        print(self.sunset)
 
     def update_weather(self):
-        pass
+        return True
 
     def get_light_sendor(self):
         return True

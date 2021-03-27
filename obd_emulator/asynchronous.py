@@ -2,11 +2,11 @@
 import time
 import threading
 import sys
-from .obd import OBD
+from .obd import OBDEmulator
 from .OBDResponse import OBDResponse
 
 """ class to make asynchronous querys """
-class Async(OBD):
+class Async(OBDEmulator):
 
     def __init__(self, delay_cmds=0.25):
         super().__init__()
