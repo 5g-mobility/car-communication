@@ -41,7 +41,7 @@ class ResponseGenerator:
     def update_weather(self):
         times = 0
         data = None
-        while not data or data[]:
+        while not data or data:
             if times == 3:
                 sys.exit('Couldn\'t refresh params. Api not working')
 
