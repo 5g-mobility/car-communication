@@ -2,3 +2,4 @@ obd==0.7.1
 geocoder==1.38.1
 requests==2.25.1
 pytest==6.2.2
+mock==4.0.3
