@@ -12,31 +12,31 @@ def obd():
 def test_RPM(obd):
     r = obd.query(commands.RPM)
 
-    assert r.value > -1 and r.value < 8001
+    assert r.value >= 0 and r.value <= 8000
 
 # test speed
 def test_SPEED(obd):
 	r = obd.query(commands.SPEED)
 
-	assert r.value > -1 and r.value < 300
+	assert r.value >= 0 and r.value <= 300
 
 # test run_time
 def test_RUN_TIME(obd):
 	r = obd.query(commands.RUN_TIME)
 
-	assert r.value > -1 and r.value < 3600
+	assert r.value >= 0 and r.value <= 3600
 
 # test air temperature
 def test_AIR_TEMP(obd):
 	r = obd.query(commands.AMBIANT_AIR_TEMP)
 
-	assert r.value > -20 and r.value < 50
+	assert r.value >= -20 and r.value <= 50
 
 # test average consumption
 def test_AVG_CONSUMPTION(obd):
 	r = obd.query(commands.AVG_CONSUMPTION)
 
-	assert r.value > 4.9 and r.value < 15.1
+	assert r.value >= 5.0 and r.value <= 15.0
 
 # test unknown command
 def test_Unknown_Command(obd):

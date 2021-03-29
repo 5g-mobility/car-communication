@@ -3,6 +3,7 @@ import geocoder
 import requests
 import datetime
 import threading
+import sys
 
 class ResponseGenerator:
 
@@ -25,12 +26,28 @@ class ResponseGenerator:
         threading.Timer(3600, self.update_all).start()
 
     def update_sun(self):
-        data = self.request_json('https://api.sunrise-sunset.org/json', dict(lat=self.location[0], lng=self.location[1], formatted=0))
+        times = 0
+        data = None
+        while not data:
+            if times == 3:
+                sys.exit('Couldn\'t refresh params. Api not working')
+
+            data = self.request_json('https://api.sunrise-sunset.org/json', dict(lat=self.location[0], lng=self.location[1], formatted=0))
+            times += 1
+        
         self.sunrise = datetime.datetime.strptime(data['results']['sunrise'], '%Y-%m-%dT%H:%M:%S+00:00')
         self.sunset = datetime.datetime.strptime(data['results']['sunset'], '%Y-%m-%dT%H:%M:%S+00:00')
 
     def update_weather(self):
-        data = self.request_json('https://api.weatherbit.io/v2.0/current', dict(lat=self.location[0], lon=self.location[1], key = "ef58b324228248f6a49385a2d6cd58f8"))
+        times = 0
+        data = None
+        while not data or data[]:
+            if times == 3:
+                sys.exit('Couldn\'t refresh params. Api not working')
+
+            data = self.request_json('https://api.weatherbit.io/v2.0/current', dict(lat=self.location[0], lon=self.location[1], key = "ef58b324228248f6a49385a2d6cd58f8"))
+            times += 1
+
         self.visibility = data['data'][0]['vis']
         self.precipitation_rate = data['data'][0]['precip']
 
@@ -51,7 +68,14 @@ class ResponseGenerator:
         return False
 
     def request_json(self, url, params):
-        resp = requests.get(url=url, params=params)
+        try:
+            resp = requests.get(url=url, params=params)
+        except requests.exceptions.RequestException as e:
+            return None
+
+        if resp.status_code != 200:
+            return None
+        
         return resp.json()
 
     
