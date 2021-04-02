@@ -14,18 +14,31 @@ class ResponseGenerator:
         self.precipitation_rate = None
         self.location = None
         self.last_update = None
-        self.update_all()
     
     def update_all(self):
-        g = geocoder.ip('me')
-        self.location = g.latlng
         self.update_sun()
         self.update_weather()
         self.last_update = datetime.datetime.utcnow()
         # Updates every hour
-        threading.Timer(3600, self.update_all).start()
+        t = threading.Timer(3600, self.update_all)
+        # allows the thread to be stoped
+        t.daemon = True
+        t.start()
+
+    # update the location using geocoder
+    def get_location(self):
+        if self.location:
+            return
+
+        g = geocoder.ip('me')
+        self.location = g.latlng
+
+        return g
+
 
     def update_sun(self):
+        self.get_location()
+
         times = 0
         data = None
         while not data:
@@ -38,7 +51,11 @@ class ResponseGenerator:
         self.sunrise = datetime.datetime.strptime(data['results']['sunrise'], '%Y-%m-%dT%H:%M:%S+00:00')
         self.sunset = datetime.datetime.strptime(data['results']['sunset'], '%Y-%m-%dT%H:%M:%S+00:00')
 
+        return data
+
     def update_weather(self):
+        self.get_location()
+        
         times = 0
         data = None
         while not data:
@@ -50,6 +67,8 @@ class ResponseGenerator:
 
         self.visibility = data['data'][0]['vis']
         self.precipitation_rate = data['data'][0]['precip']
+
+        return data
 
     def get_light_sensor(self):
         now = datetime.datetime.utcnow()
@@ -78,4 +97,3 @@ class ResponseGenerator:
         
         return resp.json()
 
-    

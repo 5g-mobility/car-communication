@@ -12,6 +12,7 @@ def main(mode):
     obd.logger.setLevel(obd.logging.DEBUG)
     if mode == 0:
         connection = obd_emulator.Async()
+        connection.start_monitoring()           # start thread with response generator
     elif mode == 1:
         connection = obd.OBD("/dev/tty.OBDLinkMX68078-STN-SPP")
 
