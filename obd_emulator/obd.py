@@ -16,7 +16,7 @@ class OBDEmulator:
         self.response_generator = ResponseGenerator()
         self.__last_command = None
 
-    def start_monitoring():
+    def start_monitoring(self):
         self.response_generator.update_all()
 
     def close(self):
