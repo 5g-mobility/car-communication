@@ -1,6 +1,7 @@
 import argparse
 import obd
 import time
+import obd_emulator
 
 # a callback that prints every new value to the console
 def new_rpm(r):
@@ -10,11 +11,11 @@ def main(mode):
     # turn on debug mode
     obd.logger.setLevel(obd.logging.DEBUG)
     if mode == 0:
-        connection = car_emulator.Async()
+        connection = obd_emulator.Async()
     elif mode == 1:
         connection = obd.OBD("/dev/tty.OBDLinkMX68078-STN-SPP")
 
-    connection.watch(obd.commands.RPM, callback=new_rpm)
+    connection.watch(obd_emulator.commands.LIGHT_SENSOR, callback=new_rpm)
     
     connection.start()
 
