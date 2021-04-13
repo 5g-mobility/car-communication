@@ -13,8 +13,11 @@ class OBDEmulator:
 
     def __init__(self):
         print('Magic connection made with sucess. Ready to emulate')
-        # self.response_generator = ResponseGenerator()
+        self.response_generator = ResponseGenerator()
         self.__last_command = None
+
+    def start_monitoring(self):
+        self.response_generator.update_all()
 
     def close(self):
         print('Closing connection...')
