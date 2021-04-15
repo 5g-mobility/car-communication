@@ -32,6 +32,24 @@ def test_AIR_TEMP(obd):
 
 	assert r.value >= -20 and r.value <= 50
 
+# test light sensor
+def test_Light_Sensor(obd):
+	r = obd.query(commands.LIGHT_SENSOR)
+
+	assert r.value == True or r.value == False
+
+# test fog light sensor
+def test_Fog_Lights(obd):
+	r = obd.query(commands.FOG_LIGHTS)
+
+	assert r.value == True or r.value == False
+
+# test Rain sensor
+def test_Rain_Sensor(obd):
+	r = obd.query(commands.RAIN_SENSOR)
+
+	assert r.value == True or r.value == False
+
 # test co2 emissions
 def test_CO2_EMISSIONS(obd):
 	r = obd.query(commands.CO2_EMISSIONS)

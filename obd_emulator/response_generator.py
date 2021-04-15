@@ -6,6 +6,7 @@ import time
 import threading
 import sys
 import random
+import os
 
 class ResponseGenerator:
 
@@ -17,16 +18,20 @@ class ResponseGenerator:
         self.location = None
         self.last_update = None
         self.temp = None
+        self.update_all()
     
     def update_all(self):
         self.update_sun()
         self.update_weather()
         self.last_update = datetime.datetime.now()
         # Updates every hour
-        t = threading.Timer(3600, self.update_all)
-        # allows the thread to be stoped
-        t.daemon = True
-        t.start()
+        if 'ENVIRONMENT' in os.environ and os.environ.get('ENVIRONMENT') == 'github-actions':
+            pass
+        else:
+            t = threading.Timer(3600, self.update_all)
+            # allows the thread to be stoped
+            t.daemon = True
+            t.start()
 
     # update the location using geocoder
     def get_location(self):
