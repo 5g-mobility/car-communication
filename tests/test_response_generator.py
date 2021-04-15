@@ -1,7 +1,6 @@
 import pytest
 from obd_emulator.response_generator import ResponseGenerator
 
-# TODO
 @pytest.fixture
 def generator():
     return ResponseGenerator()

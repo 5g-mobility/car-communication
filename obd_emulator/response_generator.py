@@ -1,9 +1,11 @@
 import time
 import geocoder
-import requests
 import datetime
+import requests
+import time
 import threading
 import sys
+import random
 
 class ResponseGenerator:
 
@@ -14,11 +16,12 @@ class ResponseGenerator:
         self.precipitation_rate = None
         self.location = None
         self.last_update = None
+        self.temp = None
     
     def update_all(self):
         self.update_sun()
         self.update_weather()
-        self.last_update = datetime.datetime.utcnow()
+        self.last_update = datetime.datetime.now()
         # Updates every hour
         t = threading.Timer(3600, self.update_all)
         # allows the thread to be stoped
@@ -67,13 +70,17 @@ class ResponseGenerator:
 
         self.visibility = data['data'][0]['vis']
         self.precipitation_rate = data['data'][0]['precip']
+        self.temp = data['data'][0]['temp']
 
         return data
 
     def get_light_sensor(self):
-        now = datetime.datetime.utcnow()
-        if now < self.sunrise:
+        now = datetime.datetime.now()
+        if now < self.sunset and now > self.sunrise:
             return True
+        else:
+            return False
+        
         return False
 
     def get_fog_light_sensor(self):
@@ -86,10 +93,15 @@ class ResponseGenerator:
             return True
         return False
 
+    def get_ambient_air_temp(self):
+        max = self.temp + 1.5
+        min = self.temp - 1.5
+        return random.uniform(min, max)
+
     def request_json(self, url, params):
         try:
             resp = requests.get(url=url, params=params)
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return None
 
         if resp.status_code != 200:
