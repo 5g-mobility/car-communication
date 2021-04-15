@@ -1,14 +1,9 @@
 import pytest
 from obd_emulator.response_generator import ResponseGenerator
 
-# TODO
 @pytest.fixture
 def generator():
     return ResponseGenerator()
-
-# test geocoder
-def test_geocoder(generator):
-    assert generator.get_location().status == 'OK'
 
 # test update sun method
 def test_update_sun(generator):
@@ -28,3 +23,7 @@ def test_fog_lights(generator):
     response = generator.update_weather()
     assert  response['data'][0]['vis'] is not None
     assert  response['data'][0]['precip'] is not None
+
+# test geocoder
+def test_geocoder(generator):
+    assert generator.get_location().status == 'OK'
