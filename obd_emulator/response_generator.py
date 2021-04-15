@@ -21,6 +21,7 @@ class ResponseGenerator:
         self.update_all()
     
     def update_all(self):
+        self.get_location()
         self.update_sun()
         self.update_weather()
         self.last_update = datetime.datetime.now()
@@ -35,9 +36,6 @@ class ResponseGenerator:
 
     # update the location using geocoder
     def get_location(self):
-        if self.location:
-            return
-
         g = geocoder.ip('me')
         self.location = g.latlng
 
@@ -45,8 +43,6 @@ class ResponseGenerator:
 
 
     def update_sun(self):
-        self.get_location()
-
         times = 0
         data = None
         while not data:
@@ -62,8 +58,6 @@ class ResponseGenerator:
         return data
 
     def update_weather(self):
-        self.get_location()
-        
         times = 0
         data = None
         while not data:
