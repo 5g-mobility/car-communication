@@ -10,7 +10,7 @@ sel = selectors.DefaultSelector()
 
 
 class Server:
-    def __init__(self, port=8000)
+    def __init__(self, port=8000):
         self.port = port
         self.client_vehicles = {}
         self.vehicles_id = []
