@@ -57,7 +57,7 @@ def read(self, conn, mask):
 
 
     if tamanhoMsg = conn.recv(5):
-
+        pass
 
 
 
