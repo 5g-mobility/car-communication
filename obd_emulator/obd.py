@@ -8,15 +8,21 @@ import datetime
 from .commands import commands
 from .response_generator import ResponseGenerator
 from .OBDResponse import OBDResponse
+import traci
+import traci.constants as tc
 
 
 class OBDEmulator:
 
-    def __init__(self):
+    def __init__(self, vehicleId):
         print('Magic connection made with sucess. Ready to emulate')
         self.init_time = datetime.datetime.now()
         self.response_generator = ResponseGenerator()
         self.__last_command = None
+        self.vehicleId = vehicleId
+        self.traci.start(8000)
+        
+        
 
     def start_monitoring(self):
         self.response_generator.update_all()
@@ -27,6 +33,9 @@ class OBDEmulator:
     """ make query to car """
     def query(self, command):
         self.__last_command = command
+
+
+    #alterar aki
 
         if command == commands.RPM:
             return OBDResponse(random.randint(0, 8000), command)
