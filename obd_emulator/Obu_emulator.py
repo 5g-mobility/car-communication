@@ -3,7 +3,6 @@ import time
 import traci.constants as tc
 
 import obd_emulator
-from obd_emulator import *
 
 SUMO_BINARY = "sumo"
 SUMO_CMD = [SUMO_BINARY, "-c", "osm.sumocfg"]

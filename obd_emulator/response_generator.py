@@ -18,28 +18,17 @@ class ResponseGenerator:
         self.location = None
         self.last_update = None
         self.temp = None
-        self.update_all()
-    
-    def update_all(self):
-        self.get_location()
+
+        #self.update_all()
+
+
+    def update_params(self, location):
+
+        self.location = location
+
         self.update_sun()
         self.update_weather()
-        self.last_update = datetime.datetime.now()
-        # Updates every hour
-        if 'ENVIRONMENT' in os.environ and os.environ.get('ENVIRONMENT') == 'github-actions':
-            pass
-        else:
-            t = threading.Timer(3600, self.update_all)
-            # allows the thread to be stoped
-            t.daemon = True
-            t.start()
 
-    # update the location using geocoder
-    def get_location(self):
-        g = geocoder.ip('me')
-        self.location = g.latlng
-
-        return g
 
 
     def update_sun(self):

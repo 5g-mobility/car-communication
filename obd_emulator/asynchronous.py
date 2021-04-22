@@ -8,8 +8,7 @@ from .OBDResponse import OBDResponse
 """ class to make asynchronous querys """
 class Async(OBDEmulator):
 
-    def __init__(self, delay_cmds=0.25, vehicleId):
-        super().__init__(vehicleId)
+    def __init__(self, delay_cmds=0.25, ):
         self.__thread = None
         self.__commands = {}    # key = OBDCommand, value = Response
         self.__callbacks = {}   # key = OBDCommand, value = list of Functions
