@@ -67,14 +67,11 @@ def main():
                         just update it
                     """
                     obd2EmulatorMap[veh_id].update(position , speed, co2_emissions)
-                # se nao estiver criar instancia obd2
-                # obdEmu = Obd(a    faf, adad)
 
-                # position = traci.simulation.convertGeo(x, y)
-                print(obd2EmulatorMap["veh0"])
+                print(obd2EmulatorMap[veh_id])
 
                 time.sleep(0.5)
-                # print(f"Antes do sleep:{traci.simulation.getTime()}")
+
             traci.simulationStep()
 
             # print(traci.vehicle.getSubscriptionResults("vehID"))
