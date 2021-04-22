@@ -19,10 +19,6 @@ class OBDEmulator:
         self.response_generator = ResponseGenerator()
         self.__last_command = None
 
-        
-        
-
-
     def update_location(self, location):
 
         self.response_generator.update_params(location)
