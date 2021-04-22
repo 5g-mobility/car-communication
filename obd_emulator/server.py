@@ -80,6 +80,7 @@ def start(self):
 
 
 if __name__ == "__main__":
+    pass
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument("--port", help="port used for communication", default=8000)
