@@ -62,21 +62,21 @@ def read(self, conn, mask):
 
 
 def start(self):
+    pass
+    # traci.start(["sumo", "-c", "osm.sumocfg"], port=self.port)
+    # self.vehicles_id =  traci.vehicle.getIDList()
 
-    traci.start(["sumo", "-c", "osm.sumocfg"], port=self.port)
-    self.vehicles_id =  traci.vehicle.getIDList()
+    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    #     s.bind((HOST, PORT)) # associa o endereço e a porta ao socket
+    #     s.listen(100) # cria 1 fila de espera apenas para 1 ligação, enquanto um socket estiver a correr a outra fica na lista as outras são rejeitadas
+    #     s.setblocking(False)
+    #     sel.register(s,selectors.EVENT_READ,accept)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT)) # associa o endereço e a porta ao socket
-        s.listen(100) # cria 1 fila de espera apenas para 1 ligação, enquanto um socket estiver a correr a outra fica na lista as outras são rejeitadas
-        s.setblocking(False)
-        sel.register(s,selectors.EVENT_READ,accept)
-
-        while True: 
-            events = sel.select()
-            for key, mask in events:
-                callback = key.data
-                callback(key.fileobj, mask)
+    #     while True: 
+    #         events = sel.select()
+    #         for key, mask in events:
+    #             callback = key.data
+    #             callback(key.fileobj, mask)
 
 
 if __name__ == "__main__":
