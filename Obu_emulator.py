@@ -3,6 +3,7 @@ import time
 import traci.constants as tc
 
 import obd_emulator
+from middlware_com_obu_rsu import ObuMiddleware
 
 SUMO_BINARY = "sumo"
 SUMO_CMD = [SUMO_BINARY, "-c", "sumo-exp/osm.sumocfg"]

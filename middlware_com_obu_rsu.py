@@ -1,6 +1,8 @@
 import socket
 import json
 import argparse
+import sys
+import datetime
 
 class ObuMiddleware:
     def __init__(self, host='', port=8000):
@@ -18,16 +20,30 @@ class ObuMiddleware:
 
 
     def send_msg(self, msg):
-        # TODO use json to encode the data
-        self.socket.sendall(msg)
-        data = self.socket.recv(1024)
-        return data
+        # TODO fazer verificação da msg que está a ser enviada
+        try:
+            self.socket.sendall(json.dumps(msg).encode('utf-8'))
+        except BrokenPipeError:
+            sys.exit('The connection was lost.')
+
+    def recv_msg(self):
+        # TODO usar um header para indicar tamanho da msg
+        return self.socket.recv(1024)
 
     # TODO delete method
     def exp_middleware(self):
-        data = self.send_msg(b'ola server')
+        while True:
+            data = {'tm' : str(datetime.datetime.now())}
 
-        print(f'Received from server: {data}')
+            msg = str(input('Qual a mensagem? '))
+
+            if msg == 'EXIT':
+                break
+
+            data['msg'] = msg
+
+            self.send_msg(data)        
+        
         self.close()
 
 

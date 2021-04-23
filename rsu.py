@@ -1,6 +1,8 @@
 import selectors
 import socket
 import argparse
+import json
+import logging
 
 class RSU:
     def __init__(self, host='localhost', port=8000):
@@ -10,6 +12,21 @@ class RSU:
         self.socket = None
         self.client_sockets = []
 
+        self.create_logger()
+        self.logger.info('RSU object initialized.')
+
+    def create_logger(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+        ch.setFormatter(formatter)
+        self.logger.addHandler(ch)
+
     def accept(self, sock, mask):
         """ aceita novas ligações
             Parametros:
@@ -17,7 +34,7 @@ class RSU:
             mask: mascara
         """
         conn, addr = sock.accept()
-        print('accepted', conn, 'from', addr)
+        self.logger.info(f'accepted {conn} from {addr}')
 
         conn.setblocking(False) # impedir que bloqueie
         self.selector.register(conn, selectors.EVENT_READ, self.read) # registar a socket no selector
@@ -28,19 +45,22 @@ class RSU:
             Parametros:
             conn: socket do broker associada a uma determinada entidade
         """
-        print('closing', conn) 
+        self.logger.info(f'closing {conn}') 
 
         self.selector.unregister(conn)
         self.client_sockets.remove(conn)
         conn.close()
 
     def read(self, conn, mask):
-        data = conn.recv(1000)  # Should be ready
+        # TODO usar header com tamanho da mensagem
+        data = conn.recv(1024)  # Should be ready
         if data:
-            print('echoing', repr(data), 'to', conn)
-            conn.sendall(f"Message received: [{data}]".encode('utf-8'))  # Hope it won't block
+            data = json.loads(data.decode('utf-8'))
+            self.logger.debug(f'Message received: {data} from {conn}')
+            
+            # TODO agr era necessário enviar a informação recebida para o broker no IT
         else:
-            print('closing', conn)
+            self.logger.error(f'Connection losted with {conn}')
             self.selector.unregister(conn)
             conn.close()
 
@@ -48,6 +68,7 @@ class RSU:
         try:
             rsu.start_server()
         except Exception:
+            self.logger.info('Closing server...')
             rsu.close()
 
     def start_server(self):
@@ -57,7 +78,7 @@ class RSU:
         self.socket.setblocking(False)
         self.selector.register(self.socket, selectors.EVENT_READ, self.accept)
 
-        print(f'RSU server listening on port {self.port}...')
+        self.logger.info(f'RSU server listening on port {self.port}...')
 
         while True: 
             events = self.selector.select()
