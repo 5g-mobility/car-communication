@@ -34,9 +34,6 @@ class OBDEmulator:
     def query(self, command, location=None):
         self.__last_command = command
 
-
-    #alterar aki
-
         if command == commands.RPM:
             return OBDResponse(random.randint(0, 8000), command)
         elif command == commands.SPEED:

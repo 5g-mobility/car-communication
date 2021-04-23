@@ -8,6 +8,9 @@ def generator():
 # test update sun method
 def test_update_sun(generator):
     """ fail if the api returns a code different from OK"""
+	
+    generator.update_params(("52.52364029919217", "13.400111802078426"))
+
     response = generator.update_sun()
     assert response['status'] == 'OK'
     assert response['results']['sunrise'] is not None
@@ -20,10 +23,12 @@ def test_fog_lights(generator):
         so, this test just checks if the response arrives and has the
         necessary params that allows the update
     """
+    generator.update_params(("52.52364029919217", "13.400111802078426"))
+
     response = generator.update_weather()
     assert  response['data'][0]['vis'] is not None
     assert  response['data'][0]['precip'] is not None
 
 # test geocoder
-def test_geocoder(generator):
-    assert generator.get_location().status == 'OK'
+# def test_geocoder(generator):
+#     assert generator.get_location().status == 'OK'
