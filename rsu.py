@@ -17,6 +17,9 @@ class RSU:
         self.create_logger()
         self.logger.info('RSU object initialized.')
 
+        ## 4 testing
+        self.last_message = None
+
     def create_logger(self):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
@@ -57,6 +60,9 @@ class RSU:
         data = self.receive_message(conn, mask)  # Should be ready
         if data:
             data = json.loads(data.decode('utf-8'))
+
+            self.last_message = data
+
             self.logger.debug(f'Message received: {data} from {conn}')
             
             # TODO agr era necessário enviar a informação recebida para o broker no IT
@@ -86,10 +92,9 @@ class RSU:
 
     def start(self):
         try:
-            rsu.start_server()
+            self.start_server()
         except Exception:
             self.logger.info('Closing server...')
-            rsu.close()
 
     def start_server(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
