@@ -12,6 +12,8 @@ class RSU:
         self.socket = None
         self.client_sockets = []
 
+        self.header = 4         # length of the expected header 
+
         self.create_logger()
         self.logger.info('RSU object initialized.')
 
@@ -52,17 +54,35 @@ class RSU:
         conn.close()
 
     def read(self, conn, mask):
-        # TODO usar header com tamanho da mensagem
-        data = conn.recv(1024)  # Should be ready
+        data = self.receive_message(conn, mask)  # Should be ready
         if data:
             data = json.loads(data.decode('utf-8'))
             self.logger.debug(f'Message received: {data} from {conn}')
             
             # TODO agr era necessário enviar a informação recebida para o broker no IT
-        else:
-            self.logger.error(f'Connection losted with {conn}')
-            self.selector.unregister(conn)
-            conn.close()
+
+    def receive_message(self, conn, mask):        
+        # receive 4 bytes indicating the length of the message
+        payload_length = conn.recv(self.header)
+
+        if not payload_length:
+            self.close_connection(conn)
+            return None
+
+        # receive the expected message
+        payload = conn.recv(int.from_bytes(payload_length, byteorder='big'))
+
+        if not payload:
+            self.close_connection(conn)
+            return None
+
+        # return payload
+        return payload
+
+    def close_connection(self, conn):
+        self.logger.error(f'Connection losted with {conn}')
+        self.selector.unregister(conn)
+        conn.close()
 
     def start(self):
         try:
