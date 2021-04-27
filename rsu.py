@@ -3,6 +3,8 @@ import socket
 import argparse
 import json
 import logging
+import paho.mqtt.publish as publish
+from utils import *
 
 class RSU:
     def __init__(self, host='localhost', port=8000):
@@ -56,6 +58,7 @@ class RSU:
         self.client_sockets.remove(conn)
         conn.close()
 
+
     def read(self, conn, mask):
         data = self.receive_message(conn, mask)  # Should be ready
         if data:
@@ -64,6 +67,13 @@ class RSU:
             self.last_message = data
 
             self.logger.debug(f'Message received: {data} from {conn}')
+
+            tiles = geoTiles_conveter(data['position'])
+
+            print(tiles)
+
+            self.send(tiles, data)
+
             
             # TODO agr era necessário enviar a informação recebida para o broker no IT
 
@@ -121,6 +131,15 @@ class RSU:
 
         self.selector.close()
 
+    def send(self, tile_position, msg):
+
+        tile_path = "/".join("{}".format(tile_position))
+
+
+        print(msg)
+        topic = "its_center/inqueue/5g-mobility/{}".format(tile_path)
+        print(topic)
+        publish.single(topic=topic, payload= msg.encode(), port=1883,hostname="broker.es.av.it.pt")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
