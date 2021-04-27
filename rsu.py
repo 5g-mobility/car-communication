@@ -69,21 +69,14 @@ class RSU:
 
     def receive_message(self, conn, mask):        
         # receive 4 bytes indicating the length of the message
-        payload_length = conn.recv(self.header)
+        payload_length = self.socket_receive_message(conn, self.header)
 
-        if not payload_length:
-            self.close_connection(conn)
-            return None
+        if payload_length:
+            # receive the expected message
+            payload = self.socket_receive_message(conn, int.from_bytes(payload_length, byteorder='big'))
 
-        # receive the expected message
-        payload = conn.recv(int.from_bytes(payload_length, byteorder='big'))
-
-        if not payload:
-            self.close_connection(conn)
-            return None
-
-        # return payload
-        return payload
+            # return payload
+            return payload
 
     def socket_receive_message(self, conn, payload_length):
         payload = b''
@@ -92,15 +85,28 @@ class RSU:
             # have in mind that the connection can be lost
             # the while loop can not run indeterminately
             try:
-                payload += conn.recv(payload_length - len(payload))
+                payload_recv = conn.recv(payload_length - len(payload))
+                
+                if not payload_recv:
+                    self.close_connection(conn)
+                    return None
+            
+                payload += payload_recv
+
+            except BlockingIOError as io:
+                # having this error the connection can still exist
+                # just need to wait
+                self.logger.debug(f'Socket IOError: {io}')
             except Exception as e:
+                # TODO check if there are more exceptions that can be ok
                 self.logger.error(f'Socket error: {e}')
-                # TODO fazer exception no caso de ser mesmo para sair pq conexão quebrou-se
+                self.close_connection(conn)
+            
 
         return payload
 
     def close_connection(self, conn):
-        self.logger.error(f'Connection losted with {conn}')
+        self.logger.debug(f'Connection losted with {conn}')
         self.selector.unregister(conn)
         conn.close()
 
