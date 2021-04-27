@@ -85,6 +85,20 @@ class RSU:
         # return payload
         return payload
 
+    def socket_receive_message(self, conn, payload_length):
+        payload = b''
+
+        while len(payload) != payload_length:
+            # have in mind that the connection can be lost
+            # the while loop can not run indeterminately
+            try:
+                payload += conn.recv(payload_length - len(payload))
+            except Exception as e:
+                self.logger.error(f'Socket error: {e}')
+                # TODO fazer exception no caso de ser mesmo para sair pq conexão quebrou-se
+
+        return payload
+
     def close_connection(self, conn):
         self.logger.error(f'Connection losted with {conn}')
         self.selector.unregister(conn)
@@ -93,7 +107,8 @@ class RSU:
     def start(self):
         try:
             self.start_server()
-        except Exception:
+        except Exception as e:
+            self.logger.info(e)
             self.logger.info('Closing server...')
 
     def start_server(self):
