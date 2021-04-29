@@ -40,7 +40,9 @@ def main():
                 # send information of the vehicle to the RSU
                 emulator_car_map[veh_id].forward_info_2_RSU()
                 print(f'Car with id {veh_id} sent his data to RSU')
-                time.sleep(0.5)
+                
+                # for not be blocked by the api
+                time.sleep(1.1)
 
             traci.simulationStep()
 
