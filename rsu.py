@@ -69,31 +69,52 @@ class RSU:
 
     def receive_message(self, conn, mask):        
         # receive 4 bytes indicating the length of the message
-        payload_length = conn.recv(self.header)
+        payload_length = self.socket_receive_message(conn, self.header)
 
-        if not payload_length:
-            self.close_connection(conn)
-            return None
+        if payload_length:
+            # receive the expected message
+            payload = self.socket_receive_message(conn, int.from_bytes(payload_length, byteorder='big'))
 
-        # receive the expected message
-        payload = conn.recv(int.from_bytes(payload_length, byteorder='big'))
+            # return payload
+            return payload
 
-        if not payload:
-            self.close_connection(conn)
-            return None
+    def socket_receive_message(self, conn, payload_length):
+        payload = b''
 
-        # return payload
+        while len(payload) != payload_length:
+            # have in mind that the connection can be lost
+            # the while loop can not run indeterminately
+            try:
+                payload_recv = conn.recv(payload_length - len(payload))
+                
+                if not payload_recv:
+                    self.close_connection(conn)
+                    return None
+            
+                payload += payload_recv
+
+            except BlockingIOError as io:
+                # having this error the connection can still exist
+                # just need to wait
+                self.logger.debug(f'Socket IOError: {io}')
+            except Exception as e:
+                # TODO check if there are more exceptions that can be ok
+                self.logger.error(f'Socket error: {e}')
+                self.close_connection(conn)
+            
+
         return payload
 
     def close_connection(self, conn):
-        self.logger.error(f'Connection losted with {conn}')
+        self.logger.debug(f'Connection losted with {conn}')
         self.selector.unregister(conn)
         conn.close()
 
     def start(self):
         try:
             self.start_server()
-        except Exception:
+        except Exception as e:
+            self.logger.info(e)
             self.logger.info('Closing server...')
 
     def start_server(self):
