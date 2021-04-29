@@ -4,6 +4,11 @@ import argparse
 import json
 import logging
 
+import paho.mqtt.publish as publish
+
+# TODO talvez retirar se não for preciso
+from utils import *
+
 class RSU:
     def __init__(self, host='localhost', port=8000):
         self.host = host
@@ -16,9 +21,6 @@ class RSU:
 
         self.create_logger()
         self.logger.info('RSU object initialized.')
-
-        ## 4 testing
-        self.last_message = None
 
     def create_logger(self):
         self.logger = logging.getLogger(__name__)
@@ -56,16 +58,34 @@ class RSU:
         self.client_sockets.remove(conn)
         conn.close()
 
+
     def read(self, conn, mask):
         data = self.receive_message(conn, mask)  # Should be ready
         if data:
+            # send data to broker
+            self.send_msg_2_broker(data)
+
             data = json.loads(data.decode('utf-8'))
 
-            self.last_message = data
-
             self.logger.debug(f'Message received: {data} from {conn}')
+
+            # tiles = geoTiles_conveter(data['position'])
+
+            # print(tiles)
+
+
             
             # TODO agr era necessário enviar a informação recebida para o broker no IT
+
+    def send_msg_2_broker(self, msg):
+
+        # tile_path = "/".join("{}".format(tile_position))
+        # topic = "its_center/inqueue/5g-mobility/{}".format(tile_path)
+        # print(topic)
+
+        self.logger.info(f'Sending to broker: {msg}')
+
+        publish.single(topic='its_center/inqueue/5g-mobility', payload= msg, port=1883,hostname="broker.es.av.it.pt")
 
     def receive_message(self, conn, mask):        
         # receive 4 bytes indicating the length of the message
@@ -141,7 +161,6 @@ class RSU:
         self.socket.close()
 
         self.selector.close()
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
