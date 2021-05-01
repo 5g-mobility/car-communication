@@ -3,7 +3,7 @@
 
 ## How to install
 
-Make sure you are running Python 3.5 or higher
+Make sure you are running Python 3.8 or higher
 
 1. Create a virtual environment (venv)
 
