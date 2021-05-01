@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+    rsu:
+        build:
+            context: .
+        entrypoint: ["sh", "./rsu/entrypoint.sh"]
+        restart: unless-stopped
+        ports: 
+            - 8000:8000   
+    simulation:
+        build:
+            context: .
+        entrypoint: ["sh", "./simulation/entrypoint.sh"]
+        restart: unless-stopped
+        environment: 
+            - RSU_HOST=rsu
+            - SUMO_HOME=/opt/sumo
+        depends_on:
+            - rsu
+    

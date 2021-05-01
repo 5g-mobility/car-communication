@@ -3,11 +3,12 @@ import json
 import argparse
 import sys
 import datetime
+import os
 
 from obd2_sumo_integration import OBD2
 
 class OBU:
-    def __init__(self, host='', port=8000):
+    def __init__(self, host=os.environ.get('RSU_HOST', 'localhost'), port=8000):
         self.host = host
         self.port = port
 

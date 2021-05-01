@@ -2,9 +2,6 @@ from pygeotile.point import Point
 from pygeotile.tile import Tile    
 
 
-
-
-
 def geoTiles_conveter(position):
     """
         converter geo coordenadas para quadTrees
