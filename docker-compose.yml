@@ -5,9 +5,7 @@ services:
         build:
             context: .
         entrypoint: ["sh", "./rsu/entrypoint.sh"]
-        restart: unless-stopped
-        ports: 
-            - 8000:8000   
+        restart: unless-stopped 
     simulation:
         build:
             context: .
