@@ -2,13 +2,14 @@ import selectors
 import socket
 import argparse
 import json
+import os
 import logging
 
 import paho.mqtt.publish as publish
 
 
 class RSU:
-    def __init__(self, host='localhost', port=8000):
+    def __init__(self, host, port):
         self.host = host
         self.port = port
         self.selector = selectors.DefaultSelector()
@@ -166,7 +167,7 @@ class RSU:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--host", help="symbolic name for the host", default='localhost')
+        "--host", help="symbolic name for the host", default=os.environ.get('RSU_HOST', 'localhost'))
     parser.add_argument(
         "--port", help="port used for communication", default=8000)
     args = parser.parse_args()

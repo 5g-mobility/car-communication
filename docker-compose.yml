@@ -6,6 +6,10 @@ services:
             context: .
         entrypoint: ["sh", "./rsu/entrypoint.sh"]
         restart: unless-stopped 
+        environment: 
+            - RSU_HOST=rsu
+        networks:
+            - rsu_network
     simulation:
         build:
             context: .
@@ -16,4 +20,9 @@ services:
             - SUMO_HOME=/opt/sumo
         depends_on:
             - rsu
-    
+        networks:
+            - rsu_network
+
+networks:
+    rsu_network:
+        name: rsu_network
