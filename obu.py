@@ -38,13 +38,21 @@ class OBU:
             'tm' : str(datetime.datetime.now()),
             'vehicle_id' : self.vehicle_id,
             'position' : self.obd2.get_position,
-            'speed' : self.obd2.get_speed,
-            'co2_emissions' : self.obd2.get_co2_emissions,
+            'speed' : self.convert_speed(),
+            'co2_emissions' : self.convert_co2_emissions(),
             'air_temperature' : self.obd2.get_air_temperature,
             'light_sensor' : self.obd2.get_light_sensor,
             'rain_sensor' : self.obd2.get_rain_sensor,
             'fog_light_sensor' : self.obd2.get_fog_light_sensor,
         })
+
+    def convert_speed(self):
+        """ Convert ms/s to km/h """
+        return (self.obd2.get_speed * 3600) / 1000
+
+    def convert_co2_emissions(self):
+        """ Convert mg/s to g/s """
+        return self.obd2.get_co2_emissions / 1000
 
     def send_msg(self, msg):
         """ Send message to the RSU device """
