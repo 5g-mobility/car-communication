@@ -28,7 +28,7 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
-    <vType id="veh_passenger" vClass="passenger"/>
+    <vType id="veh_passenger" vClass="passenger" speedFactor="2.0"/>
     <vehicle id="veh0" type="veh_passenger" depart="0.00" departLane="best">
         <route edges="30721660#3 30721660#4 4610362#0 4610362#1 4610362#2 4610362#3 4610362#4 4610362#5 30721662#0 30721662#1 30721662#2 30721662#3 831659093#0 831659093#1 23809670#1 23809670#2 23809670#3 28016312#0 28016312#1 156364556#1 202157002#1 202157002#2 -534588621#1 -534588621#0 606078071#0 606078071#3 -562707499 -751595928#1 -136571494#0"/>
     </vehicle>

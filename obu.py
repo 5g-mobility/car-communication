@@ -4,11 +4,12 @@ import argparse
 import sys
 import datetime
 import math
+import os
 
 from obd2_sumo_integration import OBD2
 
 class OBU:
-    def __init__(self, vehicle_id, host='', port=8000):
+    def __init__(self, vehicle_id, host=os.environ.get('RSU_HOST', 'localhost'), port=8000):
         self.host = host
         self.port = port
         self.vehicle_id = vehicle_id
