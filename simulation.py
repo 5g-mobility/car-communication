@@ -27,7 +27,7 @@ def main():
                     """ if the car appears on the network for the first time
                         add it to the map
                     """
-                    emulator_car_map[veh_id] = OBU()
+                    emulator_car_map[veh_id] = OBU(veh_id)
                     emulator_car_map[veh_id].connect2OBD2(position, speed, co2_emissions)
                 else:
                     """ if the car was already initialized

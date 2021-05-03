@@ -65,22 +65,7 @@ class RSU:
             # send data to broker
             self.send_msg_2_broker(data)
 
-            data = json.loads(data.decode('utf-8'))
-
-            self.logger.debug(f'Message received: {data} from {conn}')
-
-            # tiles = geoTiles_conveter(data['position'])
-
-            # print(tiles)
-
-            # TODO agr era necessário enviar a informação recebida para o broker no IT
-
     def send_msg_2_broker(self, msg):
-
-        # tile_path = "/".join("{}".format(tile_position))
-        # topic = "its_center/inqueue/5g-mobility/{}".format(tile_path)
-        # print(topic)
-
         self.logger.info(f'Sending to broker: {msg}')
 
         publish.single(topic='its_center/inqueue/5g-mobility',
