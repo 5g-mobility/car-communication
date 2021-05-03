@@ -7,9 +7,10 @@ import datetime
 from obd2_sumo_integration import OBD2
 
 class OBU:
-    def __init__(self, host='', port=8000):
+    def __init__(self, vehicle_id, host='', port=8000):
         self.host = host
         self.port = port
+        self.vehicle_id = vehicle_id
 
         # the OBU as direct communication with the obd2 emulator
         # the OBU pulls info from obd2
@@ -35,6 +36,7 @@ class OBU:
         # TODO fazer verificação dos campos
         self.send_msg({
             'tm' : str(datetime.datetime.now()),
+            'vehicle_id' : self.vehicle_id,
             'position' : self.obd2.get_position,
             'speed' : self.obd2.get_speed,
             'co2_emissions' : self.obd2.get_co2_emissions,
