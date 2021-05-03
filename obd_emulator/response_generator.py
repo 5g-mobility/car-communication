@@ -14,7 +14,7 @@ class ResponseGenerator:
         self.sunrise = None
         self.sunset = None
         self.visibility = None
-        self.precipitation_rate = None
+        self.precipitation = None
         self.location = None
         self.last_update = None
         self.temp = None
@@ -52,13 +52,24 @@ class ResponseGenerator:
         while not data:
             if times == 3:
                 sys.exit('Couldn\'t refresh params. Api not working')
-
-            data = self.request_json('https://api.weatherbit.io/v2.0/current', dict(lat=self.location[0], lon=self.location[1], key = "ef58b324228248f6a49385a2d6cd58f8"))
+            # http://api.openweathermap.org/data/2.5/weather?lat=36.1659&lon=-86.7844&appid=00ae9df8c755778aea621c4543cf6b25&units=metric
+            data = self.request_json('http://api.openweathermap.org/data/2.5/weather',
+                                            dict(lat=self.location[0],
+                                                lon=self.location[1],
+                                                appid="00ae9df8c755778aea621c4543cf6b25",
+                                                units="metric"))
             times += 1
 
-        self.visibility = data['data'][0]['vis']
-        self.precipitation_rate = data['data'][0]['precip']
-        self.temp = data['data'][0]['temp']
+        self.visibility = data['visibility']
+        
+        try:
+            # if the rain field exists on the response it means that it is raining
+            self.precipitation = data['rain']['1h']
+        except KeyError:
+            # otherwise, it is not raining
+            self.precipitation = None
+
+        self.temp = data['main']['temp']
 
         return data
 
@@ -72,14 +83,13 @@ class ResponseGenerator:
         return False
 
     def get_fog_light_sensor(self):
-        if self.visibility <= 1:
-            return True
-        return False
+        # this measure comes in meters, so we are considering that if a person
+        # can not see more than 300 meters forward, in that case there is fog
+
+        return self.visibility <= 300
     
     def get_rain_sensor(self):
-        if self.precipitation_rate > 0:
-            return True
-        return False
+        return True if self.precipitation else False
 
     def get_ambient_air_temp(self):
         max = self.temp + 1.5
