@@ -19,10 +19,17 @@ class ResponseGenerator:
         self.last_update = None
         self.temp = None
 
+        # TODO
+        # the generator needs to have a list with all the coordinates requested
+        # only makes request if the coordinate isn't stored
+
         #self.update_all()
 
 
     def update_params(self, location):
+
+        # receives a location
+        # answers with a stored message if the location has already been requested
 
         self.location = location
 

@@ -9,10 +9,11 @@ import os
 from obd2_sumo_integration import OBD2
 
 class OBU:
-    def __init__(self, vehicle_id, host=os.environ.get('RSU_HOST', 'localhost'), port=8000):
+    def __init__(self, vehicle_id, generator, host=os.environ.get('RSU_HOST', 'localhost'), port=8000):
         self.host = host
         self.port = port
         self.vehicle_id = vehicle_id
+        self.generator = generator
 
         # the OBU as direct communication with the obd2 emulator
         # the OBU pulls info from obd2
@@ -31,7 +32,7 @@ class OBU:
 
     def connect2OBD2(self, position, speed, co2Emissions):
         """ Initialize the OBD2 object """
-        self.obd2 = OBD2(position, speed, co2Emissions)
+        self.obd2 = OBD2(self.generator, position, speed, co2Emissions)
 
     def forward_info_2_RSU(self):
         """ Forward the car data to the RSU """

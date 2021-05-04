@@ -1,8 +1,8 @@
 import obd_emulator
 
 class OBD2:
-    def __init__(self, position, speed, co2Emissions):
-        self.obdEmulator = obd_emulator.OBDEmulator()
+    def __init__(self, generator, position, speed, co2Emissions):
+        self.obdEmulator = obd_emulator.OBDEmulator(generator)
         self.position = position
         self.speed = speed
         self.co2Emissions = co2Emissions
