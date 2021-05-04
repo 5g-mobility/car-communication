@@ -16,7 +16,7 @@ class OBU:
         self.generator = generator
 
         # the OBU as direct communication with the obd2 emulator
-        # the OBU pulls info from obd2
+        # the OBU pulls information from obd2
         self.obd2 = None
 
         self.connect2RSU()

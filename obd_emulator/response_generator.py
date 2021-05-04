@@ -20,21 +20,25 @@ class ResponseGenerator:
         self.temp = None
 
         # TODO
-        # the generator needs to have a list with all the coordinates requested
+        # the generator needs to have a dictionary with all the coordinates requested
         # only makes request if the coordinate isn't stored
-
-        #self.update_all()
+        self.cache = {}
 
 
     def update_params(self, location):
 
         # receives a location
-        # answers with a stored message if the location has already been requested
+        # if the location was already requested and it has passed 50 minutes since the last update
+        # the answer will be computed using stored responses from api
 
-        self.location = location
+        # else
+        # make a request to the api
 
-        self.update_sun()
-        self.update_weather()
+        # self.location = location
+
+        # self.update_sun()
+        # self.update_weather()
+        pass
 
 
 

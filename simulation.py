@@ -42,8 +42,6 @@ def main():
                 """
                 emulator_car_map[veh_id].obd2.update(position, speed, co2_emissions)
 
-            # print(emulator_car_map[veh_id])
-
             # send information of the vehicle to the RSU
             emulator_car_map[veh_id].forward_info_2_RSU()
             print(f'Car with id {veh_id} sent his data to RSU')                
@@ -60,7 +58,9 @@ def main():
     # ligando-se mediante a sua localização
 
     # TODO fazer lógica para que os carros que já chegaram ao destino possam terminar as suas ligações ao RSU
-    # fechar as sockets
+
+
+    # close sockets
     for obu in emulator_car_map.values():
         obu.close()
 

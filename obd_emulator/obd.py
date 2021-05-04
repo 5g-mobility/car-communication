@@ -20,12 +20,8 @@ class OBDEmulator:
         self.__last_command = None
 
     def update_location(self, location):
-        # TODO remove comment
-        # self.response_generator.update_params(location)
         pass
-
-    # def start_monitoring(self):
-    #     self.response_generator.update_params()
+        # self.response_generator.update_params(location)
 
     def close(self):
         print('Closing connection...')

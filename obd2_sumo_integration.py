@@ -44,8 +44,7 @@ class OBD2:
         self.update_emu()
 
     def update_emu(self):
-
-        # Todo : aleterar a localização para geo coords
+        # update the location and params of the obd2 device using the api
         self.obdEmulator.update_location(self.position)
         self.air_temperature = self.obdEmulator.query(obd_emulator.commands.AMBIENT_AIR_TEMP).value
         self.light_sensor = self.obdEmulator.query(obd_emulator.commands.LIGHT_SENSOR).value
