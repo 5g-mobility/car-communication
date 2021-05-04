@@ -20,14 +20,13 @@ class OBDEmulator:
         self.__last_command = None
 
     def update_location(self, location):
-        pass
-        # self.response_generator.update_params(location)
+        self.response_generator.update_params(location)
 
     def close(self):
         print('Closing connection...')
 
     """ make query to car """
-    def query(self, command, location=None):
+    def query(self, command):
         self.__last_command = command
 
         if command == commands.RPM:
@@ -37,20 +36,15 @@ class OBDEmulator:
         elif command == commands.RUN_TIME:
             return OBDResponse(divmod((datetime.datetime.now()-self.init_time).total_seconds(), 60)[1], command)
         elif command == commands.AMBIENT_AIR_TEMP:
-            # return OBDResponse(self.response_generator.get_ambient_air_temp(), command)
-            return OBDResponse(20, command)
+            return OBDResponse(self.response_generator.get_ambient_air_temp(), command)
         elif command == commands.LIGHT_SENSOR:
-            # self.response_generator.get_light_sensor()
-            return OBDResponse(True, command)
+            return OBDResponse(self.response_generator.get_light_sensor(), command)
         elif command == commands.FOG_LIGHTS:
-            # self.response_generator.get_fog_light_sensor()
-            return OBDResponse(False, command)
+            return OBDResponse(self.response_generator.get_fog_light_sensor(), command)
         elif command == commands.RAIN_SENSOR:
-            # self.response_generator.get_rain_sensor()
-            return OBDResponse(False, command)
+            return OBDResponse(self.response_generator.get_rain_sensor(), command)
         elif command == commands.CO2_EMISSIONS:
             return OBDResponse(random.uniform(60, 300), command)
         else:
             print('Unknown command')
             return OBDResponse()
-        

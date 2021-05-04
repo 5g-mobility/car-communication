@@ -27,19 +27,16 @@ class ResponseGenerator:
 
     def update_params(self, location):
 
+        self.location = location
         # receives a location
         # if the location was already requested and it has passed 50 minutes since the last update
         # the answer will be computed using stored responses from api
 
-        # else
-        # make a request to the api
-
-        # self.location = location
-
-        # self.update_sun()
-        # self.update_weather()
-        pass
-
+        if not location in self.cache:
+            # else
+            # make a request to the api
+            self.update_sun()
+            self.update_weather()
 
 
     def update_sun(self):
