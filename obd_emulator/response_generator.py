@@ -19,7 +19,6 @@ class ResponseGenerator:
         self.last_update = None
         self.temp = None
 
-        # TODO
         # the generator needs to have a dictionary with all the coordinates requested
         # only makes request if the coordinate isn't stored
 
@@ -36,6 +35,8 @@ class ResponseGenerator:
         # if the location was already requested and it hasn't passed 5 minutes since the last update
         # the answer will be computed using stored responses from api
         
+        # TODO verify if the number of requests to this api is to much
+        # and if errors do not occur
         region = self.get_region_number(location)
 
         if not region in self.cache or (time.time() - self.cache[region][0]) > 300: # 5 minutes = 300 seconds

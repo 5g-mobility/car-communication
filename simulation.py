@@ -42,7 +42,6 @@ def main():
                     add it to the map
                 """
 
-                # pass response generator
                 emulator_car_map[veh_id] = OBU(veh_id, generator)
                 emulator_car_map[veh_id].connect2OBD2(position, speed, co2_emissions)
             else:
