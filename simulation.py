@@ -6,7 +6,7 @@ from obd_emulator import response_generator
 from obu import OBU
 
 SUMO_BINARY = "sumo"
-SUMO_CMD = [SUMO_BINARY, "-c", "sumo-exp/osm.sumocfg"]
+SUMO_CMD = [SUMO_BINARY, "-c", "sumo/osm.sumocfg"]
 
 emulator_car_map = {}
 
@@ -62,7 +62,7 @@ def main():
 
     traci.close()
 
-    print(f'The max of cars sending data to the backend infrastructure was {max_cars}.')
+    print(f'Max of cars sending data to the backend infrastructure was {max_cars}.')
 
     # TODO para aumentar um nível de realismo podia-se criar várias RSU e os carros iam
     # ligando-se mediante a sua localização
