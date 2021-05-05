@@ -12,6 +12,9 @@ emulator_car_map = {}
 
 def main():
 
+    # just a variable to verify the max cars that the simulation has
+    max_cars = 0
+
     # initialize response generator
     generator = response_generator.ResponseGenerator()
 
@@ -19,7 +22,13 @@ def main():
 
     while traci.simulation.getMinExpectedNumber() > 0:
         
-        for veh_id in traci.vehicle.getIDList():
+        list_current_step_cars = traci.vehicle.getIDList()
+
+        if len(list_current_step_cars) > max_cars:
+            max_cars = len(list_current_step_cars)
+            print(f'Currently, there are {max_cars} car(s) sending information to backend infrastructure.')
+
+        for veh_id in list_current_step_cars:
 
             position = traci.vehicle.getPosition(veh_id)
             position = traci.simulation.convertGeo(position[0], position[1])
@@ -49,10 +58,12 @@ def main():
         traci.simulationStep()
 
         # simulate the delay of 1 second
-        # the cars should send data each second
+        # cars should send data each second
         time.sleep(1)
 
     traci.close()
+
+    print(f'The max of cars sending data to the backend infrastructure was {max_cars}.')
 
     # TODO para aumentar um nível de realismo podia-se criar várias RSU e os carros iam
     # ligando-se mediante a sua localização
