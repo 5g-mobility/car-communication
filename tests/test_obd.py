@@ -4,9 +4,13 @@ from obd_emulator.obd import OBDEmulator
 from obd_emulator.commands import commands
 from obd_emulator import OBDResponse
 
+from obd_emulator.response_generator import ResponseGenerator
+
+generator = ResponseGenerator()
+
 @pytest.fixture
 def obd():
-    return OBDEmulator()
+    return OBDEmulator(generator)
 
 # test rpm
 def test_RPM(obd):
