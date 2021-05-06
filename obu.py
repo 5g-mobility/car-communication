@@ -17,7 +17,6 @@ class OBU:
         self.generator = generator
 
         # possible defective sensors
-        self.air_sensor = False
         self.light_sensor = False
         self.rain_sensor = False
         self.fog_sensor = False
@@ -32,7 +31,7 @@ class OBU:
         self.connect2RSU()
 
     def defective_sensor(self):
-        sensors = [self.air_sensor, self.light_sensor, self.rain_sensor, self.fog_sensor]
+        sensors = [self.light_sensor, self.rain_sensor, self.fog_sensor]
         if random.random() < 0.04:
             print('Car with defective sensor(s)')
             
@@ -66,7 +65,7 @@ class OBU:
             'position' : self.obd2.get_position,
             'speed' : self.convert_speed(),
             'co2_emissions' : self.convert_co2_emissions(),
-            'air_temperature' : round(self.obd2.get_air_temperature, 2) if self.air_sensor else round(self.obd2.get_air_temperature + random.randint(10, 20), 2),
+            'air_temperature' : round(self.obd2.get_air_temperature, 2),
             'light_sensor' : self.obd2.get_light_sensor if self.light_sensor else not self.obd2.get_light_sensor,
             'rain_sensor' : self.obd2.get_rain_sensor if self.rain_sensor else not self.obd2.get_rain_sensor,
             'fog_light_sensor' : self.obd2.get_fog_light_sensor if self.fog_sensor else not self.obd2.get_fog_light_sensor,
