@@ -13,25 +13,20 @@ from .OBDResponse import OBDResponse
 
 class OBDEmulator:
 
-    def __init__(self):
+    def __init__(self, generator):
         print('Magic connection made with sucess. Ready to emulate')
         self.init_time = datetime.datetime.now()
-        self.response_generator = ResponseGenerator()
+        self.response_generator = generator
         self.__last_command = None
 
     def update_location(self, location):
-
         self.response_generator.update_params(location)
-
-
-    # def start_monitoring(self):
-    #     self.response_generator.update_params()
 
     def close(self):
         print('Closing connection...')
 
     """ make query to car """
-    def query(self, command, location=None):
+    def query(self, command):
         self.__last_command = command
 
         if command == commands.RPM:
@@ -53,4 +48,3 @@ class OBDEmulator:
         else:
             print('Unknown command')
             return OBDResponse()
-        

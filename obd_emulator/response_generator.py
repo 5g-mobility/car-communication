@@ -1,12 +1,12 @@
 import time
-import geocoder
 import datetime
 import requests
 import time
-import threading
 import sys
 import random
 import os
+
+from geopy.geocoders import Nominatim
 
 class ResponseGenerator:
 
@@ -19,17 +19,37 @@ class ResponseGenerator:
         self.last_update = None
         self.temp = None
 
-        #self.update_all()
+        # the generator needs to have a dictionary with all the coordinates requested
+        # only makes request if the coordinate isn't stored
+
+        # coordinates : (timestamp, sun_api_response, weather_api_response)
+        self.cache = {}
+        self.geolocator = Nominatim(user_agent="OBD2_Generator")
+        self.requests_answered_by_cache = 0
 
 
     def update_params(self, location):
 
         self.location = location
+        # receives a location
+        # if the location was already requested and it hasn't passed 5 minutes since the last update
+        # the answer will be computed using stored responses from api
+        
+        # TODO verify if the number of requests to this api is to much
+        # and if errors do not occur
+        region = self.get_region_number(location)
 
-        self.update_sun()
-        self.update_weather()
+        if not region in self.cache or (time.time() - self.cache[region][0]) > 300: # 5 minutes = 300 seconds
+            # else
+            # make a request to the api
+            # save the information on cache
+            
+            self.cache[region] = (time.time() , self.update_sun(), self.update_weather())
+            return
 
-
+        # update params on this object with the response stored on cache
+        self.update_params_with_cache(region)
+        self.requests_answered_by_cache += 1
 
     def update_sun(self):
         times = 0
@@ -107,3 +127,28 @@ class ResponseGenerator:
         
         return resp.json()
 
+    def get_region_number(self, location):
+        try:
+            address = self.geolocator.reverse(f'{location[0]}, {location[1]}').address
+        except Exception as e:
+            print(f'Error finding region: {e}')
+            return
+        
+        # return the first 4 digits of the postal code
+        return address.split(',')[-2].strip().split('-')[0]
+
+    def update_params_with_cache(self, region):
+        cache_data = self.cache[region]
+        self.sunrise = datetime.datetime.strptime(cache_data[1]['results']['sunrise'], '%Y-%m-%dT%H:%M:%S+00:00')
+        self.sunset = datetime.datetime.strptime(cache_data[1]['results']['sunset'], '%Y-%m-%dT%H:%M:%S+00:00')
+
+        self.visibility = cache_data[2]['visibility']
+
+        try:
+            # if the rain field exists on the response it means that it is raining
+            self.precipitation = cache_data[2]['rain']['1h']
+        except KeyError:
+            # otherwise, it is not raining
+            self.precipitation = None
+
+        self.temp = cache_data[2]['main']['temp']
