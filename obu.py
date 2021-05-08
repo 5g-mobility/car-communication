@@ -7,6 +7,7 @@ import math
 import os
 
 from obd2_sumo_integration import OBD2
+import random
 
 class OBU:
     def __init__(self, vehicle_id, generator, host=os.environ.get('RSU_HOST', 'localhost'), port=8000):
@@ -15,11 +16,32 @@ class OBU:
         self.vehicle_id = vehicle_id
         self.generator = generator
 
-        # the OBU as direct communication with the obd2 emulator
+        # possible defective sensors
+        self.light_sensor = False
+        self.rain_sensor = False
+        self.fog_sensor = False
+
+        # 4% probability of having a defective sensor
+        self.defective_sensor()
+
+        # the OBU have direct communication with the obd2 emulator
         # the OBU pulls information from obd2
         self.obd2 = None
 
         self.connect2RSU()
+
+    def defective_sensor(self):
+        sensors = [self.light_sensor, self.rain_sensor, self.fog_sensor]
+        if random.random() < 0.04:
+            print('Car with defective sensor(s)')
+            
+            # random number of broken sensors
+            for i in range(random.randrange(1, len(sensors))):
+
+                # choose which one of the sensors is defective
+                index = random.randrange(0, len(sensors))
+                sensors[index] = True
+                sensors.pop(index)
 
     def connect2RSU(self):
         """ Connect OBU to RSU (via socket)"""
@@ -44,9 +66,9 @@ class OBU:
             'speed' : self.convert_speed(),
             'co2_emissions' : self.convert_co2_emissions(),
             'air_temperature' : round(self.obd2.get_air_temperature, 2),
-            'light_sensor' : self.obd2.get_light_sensor,
-            'rain_sensor' : self.obd2.get_rain_sensor,
-            'fog_light_sensor' : self.obd2.get_fog_light_sensor,
+            'light_sensor' : self.obd2.get_light_sensor if self.light_sensor else not self.obd2.get_light_sensor,
+            'rain_sensor' : self.obd2.get_rain_sensor if self.rain_sensor else not self.obd2.get_rain_sensor,
+            'fog_light_sensor' : self.obd2.get_fog_light_sensor if self.fog_sensor else not self.obd2.get_fog_light_sensor,
         })
 
     def convert_speed(self):
@@ -75,13 +97,3 @@ class OBU:
         # TODO verificar se é para receber info ou não das RSU
         # TODO usar um header para indicar tamanho da msg
         return self.socket.recv(1024)
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--host", help="symbolic name for the host", default='')
-    parser.add_argument("--port", help="port used for communication", default=8000)
-    args = parser.parse_args()
-
-    obu = OBU(args.host, args.port)
-
-    obu.exp_middleware()

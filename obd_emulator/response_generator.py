@@ -24,7 +24,7 @@ class ResponseGenerator:
 
         # coordinates : (timestamp, sun_api_response, weather_api_response)
         self.cache = {}
-        self.geolocator = Nominatim(user_agent="OBD2_Generator")
+        # self.geolocator = Nominatim(user_agent="OBD2_Generator")
         self.requests_answered_by_cache = 0
 
 
@@ -37,7 +37,11 @@ class ResponseGenerator:
         
         # TODO verify if the number of requests to this api is to much
         # and if errors do not occur
-        region = self.get_region_number(location)
+        # region = self.get_region_number(location)
+
+        # change to static coordinates at Barra
+        # 40.6, -8.7 -> at barra, this coordinates are always applicable
+        region = self.get_region(location)
 
         if not region in self.cache or (time.time() - self.cache[region][0]) > 300: # 5 minutes = 300 seconds
             # else
@@ -50,6 +54,13 @@ class ResponseGenerator:
         # update params on this object with the response stored on cache
         self.update_params_with_cache(region)
         self.requests_answered_by_cache += 1
+
+    def get_region(self, location):
+        lat, lon = str(location[0]), str(location[1])
+        lat = lat.split('.')
+        lon = lon.split('.')
+        
+        return (lat[0] + '.' + lat[1][0], lon[0] + '.' + lon[1][0])
 
     def update_sun(self):
         times = 0
