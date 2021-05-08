@@ -34,17 +34,23 @@ def test_openweather_api(generator):
     assert response['main']['temp'] is not None
 
 
+# deactivated beacause of static coordinates
 # test the region code returned when a location is given
-def test_return_region_number(generator):
-    code = generator.get_region_number(("40.74281077429823", "-8.637725758763903"))
+# def test_return_region_number(generator):
+#     code = generator.get_region_number(("40.74281077429823", "-8.637725758763903"))
     
-    assert code == '3870'
+#     assert code == '3870'
+
+def test_get_region(generator):
+    coordinate = generator.get_region(("40.74281077429823", "-8.637725758763903"))
+
+    assert coordinate == ('40.7', '-8.6')
 
 def test_cache(generator):
     generator.update_params(('40.6133935543361', '-8.750542788093933'))
 
     # verify if the region code was inserted on cache
-    assert '3830' in generator.cache
+    assert ('40.6', '-8.7') in generator.cache
 
     # check if code to first api is working
     assert generator.sunrise is not None
