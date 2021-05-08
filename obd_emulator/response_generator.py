@@ -56,7 +56,7 @@ class ResponseGenerator:
         self.requests_answered_by_cache += 1
 
     def get_region(self, location):
-        lat, lon = location
+        lat, lon = str(location[0]), str(location[1])
         lat = lat.split('.')
         lon = lon.split('.')
         
