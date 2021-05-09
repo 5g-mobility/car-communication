@@ -3,7 +3,7 @@
 
 Simulation of the movement of cars in the Costa Nova and Barra area using _Sumo_ and _Python_ to simulate all the data flow in a real situation: `Car -> RSU -> Broker` and ` Broker-> RSU-Car`
 
-After running the data will eventually be available at the _MQTT Broker_ `broker.es.av.it.pt` in the topic `its_center/inqueue/5g-mobility`
+After running, the data will eventually be available at the _MQTT Broker_ `broker.es.av.it.pt` in the topic `its_center/inqueue/5g-mobility`
 
 The data generated includes:
 - Timestamp of the event
