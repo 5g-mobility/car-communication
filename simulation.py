@@ -36,9 +36,11 @@ def main():
                 position = traci.simulation.convertGeo(position[0], position[1])
                 position = (position[1], position[0])
                 speed = traci.vehicle.getSpeed(veh_id)
+
                 if speed > 90:
-                    if random.random() <= 0.98:
+                    if random.random() <= 0.9955:
                         speed -= ((speed-90) + random.randint(2, 15))
+
                 co2_emissions = traci.vehicle.getCO2Emission(veh_id)
 
                 # verify if its the first time that the car pops on the net
