@@ -1,7 +1,40 @@
 
-# car-communication
+# Cars Simulation with _Sumo_
 
-## How to install
+Simulation of the movement of cars in the Costa Nova and Barra area using _Sumo_ and _Python_ simulating all the dataflow in a real situation: `Car -> RSU -> Broker` and ` Broker-> RSU-Car`
+
+After running the data will eventually be available at the _MQTT Broker_ `broker.es.av.it.pt` in the topic `its_center/inqueue/5g-mobility`
+
+The data generated includes:
+- Timestamp of the event
+- Vehicle Id
+- Position of the vehicle
+- Vehicle speed
+- Vehicle emissions
+- Temperature outside according to vehicle sensors
+- Light capture indication according to the vehicle's sensors
+- Rain indication according to vehicle sensors
+- Indication of the existence of fog according to the sensors of the vehicle
+
+## Run on _Docker_
+
+1. Build the _Docker_ image
+
+```bash
+
+docker-compose build
+
+```
+
+2. Run the simulation
+
+```bash
+
+docker-compose up -d
+
+```
+
+## Run on your environment
 
 Make sure you are running Python 3.8 or higher
 
@@ -33,7 +66,7 @@ pip install -r requirements.txt
 
 ```
 
-## How to run the application
+### How to run the application
 
 First, you need to have sumo installed on your computer. Follow the [link](https://sumo.dlr.de/docs/Downloads.php#linux_binaries), if sumo isn't already installed.
 
