@@ -58,7 +58,6 @@ class OBU:
 
     def forward_info_2_RSU(self):
         """ Forward the car data to the RSU """
-        # TODO fazer verificação dos campos
         self.send_msg({
             'tm' : str(datetime.datetime.now()),
             'vehicle_id' : self.vehicle_id,
@@ -66,9 +65,9 @@ class OBU:
             'speed' : self.convert_speed(),
             'co2_emissions' : self.convert_co2_emissions(),
             'air_temperature' : round(self.obd2.get_air_temperature, 2),
-            'light_sensor' : self.obd2.get_light_sensor if self.light_sensor else not self.obd2.get_light_sensor,
-            'rain_sensor' : self.obd2.get_rain_sensor if self.rain_sensor else not self.obd2.get_rain_sensor,
-            'fog_light_sensor' : self.obd2.get_fog_light_sensor if self.fog_sensor else not self.obd2.get_fog_light_sensor,
+            'light_sensor' : self.obd2.get_light_sensor if not self.light_sensor else not self.obd2.get_light_sensor,
+            'rain_sensor' : self.obd2.get_rain_sensor if not self.rain_sensor else not self.obd2.get_rain_sensor,
+            'fog_light_sensor' : self.obd2.get_fog_light_sensor if not self.fog_sensor else not self.obd2.get_fog_light_sensor,
         })
 
     def convert_speed(self):
@@ -81,8 +80,6 @@ class OBU:
 
     def send_msg(self, msg):
         """ Send message to the RSU device """
-        # TODO fazer verificação da msg que está a ser enviada
-
         json_msg = json.dumps(msg).encode('utf-8')
 
         try:

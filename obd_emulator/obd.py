@@ -14,7 +14,7 @@ from .OBDResponse import OBDResponse
 class OBDEmulator:
 
     def __init__(self, generator):
-        print('Magic connection made with sucess. Ready to emulate')
+        #print('Magic connection made with sucess. Ready to emulate')
         self.init_time = datetime.datetime.now()
         self.response_generator = generator
         self.__last_command = None
@@ -23,7 +23,8 @@ class OBDEmulator:
         self.response_generator.update_params(location)
 
     def close(self):
-        print('Closing connection...')
+        pass
+        #print('Closing connection...')
 
     """ make query to car """
     def query(self, command):

@@ -35,8 +35,6 @@ class ResponseGenerator:
         # if the location was already requested and it hasn't passed 5 minutes since the last update
         # the answer will be computed using stored responses from api
         
-        # TODO verify if the number of requests to this api is to much
-        # and if errors do not occur
         # region = self.get_region_number(location)
 
         # change to static coordinates at Barra
@@ -94,8 +92,8 @@ class ResponseGenerator:
         self.visibility = data['visibility']
         
         try:
-            # if the rain field exists on the response it means that it is raining
-            self.precipitation = data['rain']['1h']
+            # if the rain field exists on the response it means that it is raining          
+            self.precipitation = data['rain']['1h']   
         except KeyError:
             # otherwise, it is not raining
             self.precipitation = None
@@ -108,15 +106,12 @@ class ResponseGenerator:
         now = datetime.datetime.now()
         if now < self.sunset and now > self.sunrise:
             return True
-        else:
-            return False
         
         return False
 
     def get_fog_light_sensor(self):
         # this measure comes in meters, so we are considering that if a person
         # can not see more than 300 meters forward, in that case there is fog
-
         return self.visibility <= 300
     
     def get_rain_sensor(self):
