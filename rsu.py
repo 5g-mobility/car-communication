@@ -103,7 +103,6 @@ class RSU:
                 # just need to wait
                 self.logger.debug(f'Socket IOError: {io}')
             except Exception as e:
-                # TODO check if there are more exceptions that can be ok
                 self.logger.error(f'Socket error: {e}')
                 self.close_connection(conn)
 
