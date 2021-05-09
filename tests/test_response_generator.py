@@ -70,4 +70,4 @@ def test_cache(generator):
     assert isinstance(generator.sunrise, datetime.datetime)
     
     # temp was updated correctly
-    assert isinstance(generator.temp, float)
+    assert isinstance(generator.temp, float) or isinstance(generator.temp, int)
