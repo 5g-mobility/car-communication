@@ -16,7 +16,7 @@ def main():
 
             speed = edge.get("speed")
 
-            speed = float(speed) + 15
+            speed = abs(float(speed) - 5)
             edge.attrib['speed'] = str(speed)
 
 

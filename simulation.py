@@ -2,6 +2,7 @@ import traci
 import time
 import traci.constants as tc
 from obd_emulator import response_generator
+import random
 
 from obu import OBU
 
@@ -35,6 +36,9 @@ def main():
                 position = traci.simulation.convertGeo(position[0], position[1])
                 position = (position[1], position[0])
                 speed = traci.vehicle.getSpeed(veh_id)
+                if speed > 90:
+                    if random.random() <= 0.98:
+                        speed -= ((speed-90) + random.randint(2, 15))
                 co2_emissions = traci.vehicle.getCO2Emission(veh_id)
 
                 # verify if its the first time that the car pops on the net

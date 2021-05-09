@@ -59,7 +59,7 @@ class OBU:
     def forward_info_2_RSU(self):
         """ Forward the car data to the RSU """
         self.send_msg({
-            'tm' : str(datetime.datetime.now(datetime.timezone.utc)),
+            'tm' : str(datetime.datetime.now()),
             'vehicle_id' : self.vehicle_id,
             'position' : self.obd2.get_position,
             'speed' : self.convert_speed(),
