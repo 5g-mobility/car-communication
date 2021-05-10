@@ -12,6 +12,8 @@ SUMO_CMD = [SUMO_BINARY, "-c", "sumo/osm.sumocfg"]
 emulator_car_map = {}
 
 def main():
+
+    last_port = 8000
     
     while True:
         # just a variable to verify the max cars that the simulation has
@@ -40,7 +42,7 @@ def main():
                 if speed > 90:
                     if random.random() <= 0.9955:
                         speed -= ((speed-90) + random.randint(2, 15))
-
+                        
                 co2_emissions = traci.vehicle.getCO2Emission(veh_id)
 
                 # verify if its the first time that the car pops on the net
@@ -49,8 +51,12 @@ def main():
                         add it to the map
                     """
 
-                    emulator_car_map[veh_id] = OBU(veh_id, generator)
+                    emulator_car_map[veh_id] = OBU(veh_id, generator, port=last_port)
                     emulator_car_map[veh_id].connect2OBD2(position, speed, co2_emissions)
+                    last_port+=1
+                    if last_port > 8005:
+                        last_port = 8000
+                    
                 else:
                     """ if the car was already initialized
                         just update it
