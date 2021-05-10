@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import logging
+import threading
 
 import paho.mqtt.publish as publish
 
@@ -23,16 +24,18 @@ class RSU:
 
     def create_logger(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
+
+        self.logger.setLevel(logging.INFO)
 
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+        ch.setLevel(logging.INFO)
 
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
+        
 
     def accept(self, sock, mask):
         """ aceita novas ligações
@@ -120,22 +123,25 @@ class RSU:
             self.logger.info(e)
             self.logger.info('Closing server...')
 
-    def start_server(self):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # associa o endereço e a porta ao socket
-        self.socket.bind((self.host, self.port))
-        # cria 1 fila de espera apenas para 1 ligação, enquanto um socket estiver a correr a outra fica na lista as outras são rejeitadas
-        self.socket.listen(100)
-        self.socket.setblocking(False)
-        self.selector.register(self.socket, selectors.EVENT_READ, self.accept)
-
-        self.logger.info(f'RSU server listening on port {self.port}...')
-
+    def handle_selector(self):
         while True:
             events = self.selector.select()
             for key, mask in events:
                 callback = key.data
                 callback(key.fileobj, mask)
+
+    def start_server(self):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # associa o endereço e a porta ao socket
+        self.socket.bind((self.host, self.port))
+        # cria 1 fila de espera apenas para 1 ligação, enquanto um socket estiver a correr a outra fica na lista as outras são rejeitadas
+        self.socket.listen(150)
+        self.socket.setblocking(False)
+        self.selector.register(self.socket, selectors.EVENT_READ, self.accept)
+
+        self.logger.info(f'RSU server listening on port {self.port}...')
+
+        self.handle_selector()
 
     def close(self):
         """ Closing all the client sockets registered on the selector """
@@ -157,5 +163,26 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     rsu = RSU(args.host, args.port)
+    t1 = threading.Thread(target=rsu.start, args=())
+    t1.start()
 
-    rsu.start()
+    rsu1 = RSU(args.host, args.port+1)
+    t2 = threading.Thread(target=rsu1.start, args=())
+    t2.start()
+
+    rsu2 = RSU(args.host, args.port+2)
+    t3 = threading.Thread(target=rsu2.start, args=())
+    t3.start()
+
+    rsu3 = RSU(args.host, args.port+3)
+    t4 = threading.Thread(target=rsu3.start, args=())
+    t4.start()
+
+    rsu4 = RSU(args.host, args.port+4)
+    t5 = threading.Thread(target=rsu4.start, args=())
+    t5.start()
+
+    rsu5 = RSU(args.host, args.port+5)
+    t6 = threading.Thread(target=rsu5.start, args=())
+    t6.start()
+
