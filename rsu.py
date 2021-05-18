@@ -159,30 +159,31 @@ if __name__ == "__main__":
     parser.add_argument(
         "--host", help="symbolic name for the host", default=os.environ.get('RSU_HOST', 'localhost'))
     parser.add_argument(
-        "--port", help="port used for communication", default=8000)
+        "--port", help="port used for communication", type=int, default=8000)
     args = parser.parse_args()
 
     rsu = RSU(args.host, args.port)
-    t1 = threading.Thread(target=rsu.start, args=())
-    t1.start()
+    rsu.start()
+    # t1 = threading.Thread(target=rsu.start, args=())
+    # t1.start()
 
-    rsu1 = RSU(args.host, args.port+1)
-    t2 = threading.Thread(target=rsu1.start, args=())
-    t2.start()
+    # rsu1 = RSU(args.host, args.port+1)
+    # t2 = threading.Thread(target=rsu1.start, args=())
+    # t2.start()
 
-    rsu2 = RSU(args.host, args.port+2)
-    t3 = threading.Thread(target=rsu2.start, args=())
-    t3.start()
+    # rsu2 = RSU(args.host, args.port+2)
+    # t3 = threading.Thread(target=rsu2.start, args=())
+    # t3.start()
 
-    rsu3 = RSU(args.host, args.port+3)
-    t4 = threading.Thread(target=rsu3.start, args=())
-    t4.start()
+    # rsu3 = RSU(args.host, args.port+3)
+    # t4 = threading.Thread(target=rsu3.start, args=())
+    # t4.start()
 
-    rsu4 = RSU(args.host, args.port+4)
-    t5 = threading.Thread(target=rsu4.start, args=())
-    t5.start()
+    # rsu4 = RSU(args.host, args.port+4)
+    # t5 = threading.Thread(target=rsu4.start, args=())
+    # t5.start()
 
-    rsu5 = RSU(args.host, args.port+5)
-    t6 = threading.Thread(target=rsu5.start, args=())
-    t6.start()
+    # rsu5 = RSU(args.host, args.port+5)
+    # t6 = threading.Thread(target=rsu5.start, args=())
+    # t6.start()
 

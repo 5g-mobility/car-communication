@@ -12,17 +12,19 @@ SUMO_CMD = [SUMO_BINARY, "-c", "sumo/osm.sumocfg"]
 emulator_car_map = {}
 
 def main():
-
-    last_port = 8000
+    DEFAULT_PORT = 10000
+    current_port = 0
+    MAX_PORT = 5
+    
+    max_cars = 0
     
     while True:
         # just a variable to verify the max cars that the simulation has
-        max_cars = 0
 
         # initialize response generator
         generator = response_generator.ResponseGenerator()
 
-        traci.start(SUMO_CMD, port=9000)
+        traci.start(SUMO_CMD, port=9500)
 
         while traci.simulation.getMinExpectedNumber() > 0:
             
@@ -39,6 +41,7 @@ def main():
                 position = traci.simulation.convertGeo(position[0], position[1])
                 position = (position[1], position[0])
                 speed = traci.vehicle.getSpeed(veh_id)
+
                 if speed > 90:
                     if random.random() > 0.000000001:
                         speed = 75 + random.randint(2, 15)
@@ -53,11 +56,10 @@ def main():
                         add it to the map
                     """
 
-                    emulator_car_map[veh_id] = OBU(veh_id, generator, port=last_port)
+                    emulator_car_map[veh_id] = OBU(veh_id, generator, port=DEFAULT_PORT + current_port)
                     emulator_car_map[veh_id].connect2OBD2(position, speed, co2_emissions)
-                    last_port+=1
-                    if last_port > 8005:
-                        last_port = 8000
+
+                    current_port = (current_port + 1) % MAX_PORT
 
                     print(f'Currently, there are {max_cars} car(s) sending information to backend infrastructure.')
                     

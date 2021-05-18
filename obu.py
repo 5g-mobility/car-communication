@@ -86,9 +86,12 @@ class OBU:
             self.socket.sendall(len(json_msg).to_bytes(4, byteorder='big'))               # send header with the length of message
             self.socket.sendall(json_msg)
         except BrokenPipeError:
+            # try connect again
             sys.exit('The connection was lost.')
         except InterruptedError:
             sys.exit('Unable to send all payload. Connection lost.')
+        except Exception as e:
+
 
     def recv_msg(self):
         # TODO verificar se é para receber info ou não das RSU
