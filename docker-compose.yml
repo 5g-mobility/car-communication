@@ -4,7 +4,7 @@ services:
     rsu:
         build:
             context: .
-        entrypoint: ["sh", "./rsu/entrypoint.sh"]
+        entrypoint: ["sh", "./rsu/start_rsus.sh"]
         restart: unless-stopped 
         environment: 
             - RSU_HOST=rsu
