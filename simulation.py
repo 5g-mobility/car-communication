@@ -12,7 +12,7 @@ SUMO_CMD = [SUMO_BINARY, "-c", "sumo/osm.sumocfg"]
 emulator_car_map = {}
 
 def main():
-    DEFAULT_PORT = 10000
+    DEFAULT_PORT = 8000
     current_port = 0
     MAX_PORT = 10
     
