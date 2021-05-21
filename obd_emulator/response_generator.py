@@ -41,7 +41,7 @@ class ResponseGenerator:
         # 40.6, -8.7 -> at barra, this coordinates are always applicable
         region = self.get_region(location)
 
-        if not region in self.cache or (time.time() - self.cache[region][0]) > 300: # 5 minutes = 300 seconds
+        if not region in self.cache or (time.time() - self.cache[region][0]) > 600: # 10 minutes = 600 seconds
             # else
             # make a request to the api
             # save the information on cache
@@ -61,6 +61,7 @@ class ResponseGenerator:
         return (lat[0] + '.' + lat[1][0], lon[0] + '.' + lon[1][0])
 
     def update_sun(self):
+        print('updating sun')
         times = 0
         data = None
         while not data:
@@ -76,6 +77,7 @@ class ResponseGenerator:
         return data
 
     def update_weather(self):
+        print('updating weather')
         times = 0
         data = None
         while not data:

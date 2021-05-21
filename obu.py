@@ -5,12 +5,14 @@ import sys
 import datetime
 import math
 import os
+import time
+import threading
 
 from obd2_sumo_integration import OBD2
 import random
 
 class OBU:
-    def __init__(self, vehicle_id, generator, host=os.environ.get('RSU_HOST', 'localhost'), port=8000):
+    def __init__(self, vehicle_id, generator, host=os.environ.get('RSU_HOST', '0.0.0.0'), port=8000):
         self.host = host
         self.port = port
         self.vehicle_id = vehicle_id
@@ -29,6 +31,11 @@ class OBU:
         self.obd2 = None
 
         self.connect2RSU()
+
+        ## receive data from RSU
+        self.header = 4
+        # self.receive_message_from_rsu = threading.Thread(target=self.receive_message, args=(), daemon=True)
+        # self.receive_message_from_rsu.start()
 
     def defective_sensor(self):
         sensors = [self.light_sensor, self.rain_sensor, self.fog_sensor]
@@ -85,15 +92,70 @@ class OBU:
         try:
             self.socket.sendall(len(json_msg).to_bytes(4, byteorder='big'))               # send header with the length of message
             self.socket.sendall(json_msg)
-        except BrokenPipeError:
-            # try connect again
-            sys.exit('The connection was lost.')
-        except InterruptedError:
-            sys.exit('Unable to send all payload. Connection lost.')
+        except KeyboardInterrupt:
+            self.close()
+            sys.exit('Ending obu execution.')
         except Exception as e:
+            print(f'Error: {e}')
+            self.reconnect_2_rsu()
+
+            # try to send the message again
+            self.send_msg(msg)
+
+    
+    def reconnect_2_rsu(self):
+        # if an error occured, than the obu should try to reconnect to RSU
+        # unless it was supposed to fail
+        connected = False
+
+        while not connected:
+            try: 
+                self.connect2RSU()
+                connected = True
+            except Exception as e:
+                print(f'Error: {e}')
+
+                # wait a second
+                time.sleep(1)
 
 
-    def recv_msg(self):
-        # TODO verificar se é para receber info ou não das RSU
-        # TODO usar um header para indicar tamanho da msg
-        return self.socket.recv(1024)
+    """ Thread with the purpose of receiving messages from the RSU """
+    def receive_message(self):
+        while True:
+            # receive 4 bytes indicating the length of the message
+            payload_length = self.socket_receive_message(self.header)
+
+            if payload_length:
+                # receive the expected message
+                payload = self.socket_receive_message(
+                    int.from_bytes(payload_length, byteorder='big'))
+
+                json_payload = json.loads(payload.decode('utf-8'))
+                if json_payload["vehicle_id"] != self.vehicle_id:
+                    print(f'Id {self.vehicle_id} received: Car Speeding -- vehicle id = {json_payload["vehicle_id"]}, speed = {json_payload["speed"]}')
+
+    def socket_receive_message(self, payload_length):
+        payload = b''
+
+        while len(payload) != payload_length:
+            # have in mind that the connection can be lost
+            # the while loop can not run indeterminately
+            try:
+                payload_recv = self.socket.recv(payload_length - len(payload))
+
+                if not payload_recv:
+                    self.reconnect_2_rsu()
+                    return None
+
+                payload += payload_recv
+
+            except BlockingIOError as io:
+                # having this error the connection can still exist
+                # just need to wait
+                print(f'Socket IOError: {io}')
+            except Exception as e:
+                print(f'Socket error: {e}')
+                self.reconnect_2_rsu()
+                return None
+
+        return payload

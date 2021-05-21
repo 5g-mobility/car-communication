@@ -14,7 +14,7 @@ emulator_car_map = {}
 def main():
     DEFAULT_PORT = 10000
     current_port = 0
-    MAX_PORT = 5
+    MAX_PORT = 10
     
     max_cars = 0
     
