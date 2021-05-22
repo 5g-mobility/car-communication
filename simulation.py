@@ -11,10 +11,13 @@ SUMO_CMD = [SUMO_BINARY, "-c", "sumo/osm.sumocfg"]
 
 emulator_car_map = {}
 
+# TODO fix to many files error
+# link : http://woshub.com/too-many-open-files-error-linux/
+
 def main():
     DEFAULT_PORT = 8000
     current_port = 0
-    MAX_PORT = 10
+    MAX_PORT = 1
     
     max_cars = 0
     
@@ -75,9 +78,9 @@ def main():
 
             traci.simulationStep()
 
-            # simulate the delay of 1 second
+            # simulate the delay of 3 second
             # cars should send data each second
-            time.sleep(1)
+            time.sleep(3)
 
         traci.close()
 

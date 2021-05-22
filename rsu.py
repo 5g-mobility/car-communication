@@ -73,12 +73,12 @@ class RSU:
 
             # verify car speeding
             # if car is speeding then send information to the others vehicles
-            # content = json.loads(data)
-            # speed = content['speed']
+            content = json.loads(data)
+            speed = content['speed']
              
             
-            # if speed > 90:
-            #     threading.Thread(target=self.warn_vehicles_car_speeding, args=(content['vehicle_id'], speed), daemon=True).start()
+            if speed > 90:
+                threading.Thread(target=self.warn_vehicles_car_speeding, args=(content['vehicle_id'], speed), daemon=True).start()
 
     def warn_vehicles_car_speeding(self, veh_id, speed):
         message = json.dumps({
@@ -97,7 +97,7 @@ class RSU:
                     message
                 )
             except Exception as e:
-                self.logger.error('Error: {e}')
+                self.logger.error(f'Error: {e}')
 
     def send_msg_2_broker(self, msg):
         self.logger.info(f'Sending to broker: {msg}')
@@ -186,7 +186,7 @@ class RSU:
         self.socket.bind((self.host, self.port))
 
         # cria 1 fila de espera apenas para 1 ligação, enquanto um socket estiver a correr a outra fica na lista as outras são rejeitadas
-        self.socket.listen(150)
+        self.socket.listen(100)
         self.socket.setblocking(False)
         self.selector.register(self.socket, selectors.EVENT_READ, self.accept)
 

@@ -33,9 +33,10 @@ class OBU:
         self.connect2RSU()
 
         ## receive data from RSU
+        # TODO fazer flag para que a thread termine caso não hajam comunicações há algum tempo
         self.header = 4
-        # self.receive_message_from_rsu = threading.Thread(target=self.receive_message, args=(), daemon=True)
-        # self.receive_message_from_rsu.start()
+        self.receive_message_from_rsu = threading.Thread(target=self.receive_message, args=(), daemon=True)
+        self.receive_message_from_rsu.start()
 
     def defective_sensor(self):
         sensors = [self.light_sensor, self.rain_sensor, self.fog_sensor]
@@ -116,8 +117,7 @@ class OBU:
                 print(f'Error: {e}')
 
                 # wait a second
-                time.sleep(1)
-
+                time.sleep(2)
 
     """ Thread with the purpose of receiving messages from the RSU """
     def receive_message(self):
@@ -144,7 +144,6 @@ class OBU:
                 payload_recv = self.socket.recv(payload_length - len(payload))
 
                 if not payload_recv:
-                    self.reconnect_2_rsu()
                     return None
 
                 payload += payload_recv
@@ -155,7 +154,6 @@ class OBU:
                 print(f'Socket IOError: {io}')
             except Exception as e:
                 print(f'Socket error: {e}')
-                self.reconnect_2_rsu()
                 return None
 
         return payload
