@@ -5,6 +5,8 @@ import json
 import os
 import logging
 import threading
+import sys
+import time
 
 import paho.mqtt.publish as publish
 
@@ -68,6 +70,35 @@ class RSU:
             # send data to broker
             self.send_msg_2_broker(data)
 
+
+            # verify car speeding
+            # if car is speeding then send information to the others vehicles
+            content = json.loads(data)
+            speed = content['speed']
+             
+            
+            if speed > 90:
+                threading.Thread(target=self.warn_vehicles_car_speeding, args=(content['vehicle_id'], speed), daemon=True).start()
+
+    def warn_vehicles_car_speeding(self, veh_id, speed):
+        message = json.dumps({
+                    'vehicle_id' : veh_id,
+                    'speed' : speed
+                }).encode('utf-8')
+
+        for sock in self.client_sockets:
+            # send length
+            try:
+                sock.send(
+                    len(message).to_bytes(4, byteorder='big')
+                )
+
+                sock.send(
+                    message
+                )
+            except Exception as e:
+                self.logger.error(f'Error: {e}')
+
     def send_msg_2_broker(self, msg):
         self.logger.info(f'Sending to broker: {msg}')
 
@@ -119,9 +150,24 @@ class RSU:
     def start(self):
         try:
             self.start_server()
+        except KeyboardInterrupt:
+            self.close()
+            self.logger.info('Ending rsu...')
+            sys.exit(0)
         except Exception as e:
             self.logger.info(e)
-            self.logger.info('Closing server...')
+            self.logger.info('Rebooting server...')
+            self.close()
+
+            self.reboot_server()
+
+    def reboot_server(self):
+        try:
+            self = self.__class__(self.host, self.port)
+            self.start()
+        except Exception as e:
+            self.logger.error(e)
+
 
     def handle_selector(self):
         while True:
@@ -132,10 +178,15 @@ class RSU:
 
     def start_server(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # reuse address to allow reconnect on error
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
         # associa o endereço e a porta ao socket
         self.socket.bind((self.host, self.port))
+
         # cria 1 fila de espera apenas para 1 ligação, enquanto um socket estiver a correr a outra fica na lista as outras são rejeitadas
-        self.socket.listen(150)
+        self.socket.listen(100)
         self.socket.setblocking(False)
         self.selector.register(self.socket, selectors.EVENT_READ, self.accept)
 
@@ -157,32 +208,10 @@ class RSU:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--host", help="symbolic name for the host", default=os.environ.get('RSU_HOST', 'localhost'))
+        "--host", help="symbolic name for the host", default=os.environ.get('RSU_HOST', '0.0.0.0'))
     parser.add_argument(
-        "--port", help="port used for communication", default=8000)
+        "--port", help="port used for communication", type=int, default=8000)
     args = parser.parse_args()
 
     rsu = RSU(args.host, args.port)
-    t1 = threading.Thread(target=rsu.start, args=())
-    t1.start()
-
-    rsu1 = RSU(args.host, args.port+1)
-    t2 = threading.Thread(target=rsu1.start, args=())
-    t2.start()
-
-    rsu2 = RSU(args.host, args.port+2)
-    t3 = threading.Thread(target=rsu2.start, args=())
-    t3.start()
-
-    rsu3 = RSU(args.host, args.port+3)
-    t4 = threading.Thread(target=rsu3.start, args=())
-    t4.start()
-
-    rsu4 = RSU(args.host, args.port+4)
-    t5 = threading.Thread(target=rsu4.start, args=())
-    t5.start()
-
-    rsu5 = RSU(args.host, args.port+5)
-    t6 = threading.Thread(target=rsu5.start, args=())
-    t6.start()
-
+    rsu.start()

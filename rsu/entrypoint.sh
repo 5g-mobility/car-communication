@@ -1,4 +1,4 @@
 #!/bin/bash
 
 . venv/bin/activate
-python3.8 rsu.py
+python3.8 rsu.py --port 8000
