@@ -15,7 +15,7 @@ emulator_car_map = {}
 # link : http://woshub.com/too-many-open-files-error-linux/
 
 def main():
-    DEFAULT_PORT = 10000
+    DEFAULT_PORT = 8000
     current_port = 0
     MAX_PORT = 1
     
