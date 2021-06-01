@@ -15,7 +15,7 @@ emulator_car_map = {}
 # link : http://woshub.com/too-many-open-files-error-linux/
 
 def main():
-    DEFAULT_PORT = 8000
+    DEFAULT_PORT = 10000
     current_port = 0
     MAX_PORT = 1
     
@@ -50,8 +50,8 @@ def main():
                         speed = 75 + random.randint(2, 15)
                     else:
                         speed += random.randint(2, 15)
-    
-                co2_emissions = traci.vehicle.getCO2Emission(veh_id)/10000
+
+                co2_emissions = traci.vehicle.getCO2Emission(veh_id)
 
                 # verify if its the first time that the car pops on the net
                 if not veh_id in emulator_car_map:

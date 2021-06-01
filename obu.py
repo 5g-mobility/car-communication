@@ -62,6 +62,7 @@ class OBU:
 
     def connect2OBD2(self, position, speed, co2Emissions):
         """ Initialize the OBD2 object """
+        print('obu', co2Emissions)
         self.obd2 = OBD2(self.generator, position, speed, co2Emissions)
 
     def forward_info_2_RSU(self):
@@ -84,7 +85,7 @@ class OBU:
 
     def convert_co2_emissions(self):
         """ Convert mg/s to g/s """
-        return round(self.obd2.get_co2_emissions / 1000, 2)
+        return round(self.obd2.get_co2_emissions / 100000, 5)
 
     def send_msg(self, msg):
         """ Send message to the RSU device """
