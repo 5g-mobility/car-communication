@@ -11,9 +11,6 @@ SUMO_CMD = [SUMO_BINARY, "-c", "sumo/osm.sumocfg"]
 
 emulator_car_map = {}
 
-# TODO fix to many files error
-# link : http://woshub.com/too-many-open-files-error-linux/
-
 def main():
     DEFAULT_PORT = 8000
     current_port = 0
@@ -81,6 +78,7 @@ def main():
                     print('closing socket with {}'.format(vehicle))
                     emulator_car_map[vehicle].close()
                     cars_to_delete.append(vehicle) 
+                    time.sleep(0.5)
             for vehicle in cars_to_delete:
                 del emulator_car_map[vehicle] 
 
