@@ -101,7 +101,7 @@ class RSU:
                 self.logger.error(f'Error: {e}')
 
     def send_msg_2_broker(self, msg):
-        self.logger.info(f'Sending to broker: {msg}')
+        #self.logger.info(f'Sending to broker: {msg}')
 
         publish.single(topic='its_center/inqueue/5g-mobility',
                        payload=msg, port=1883, hostname="broker.es.av.it.pt")
@@ -146,6 +146,7 @@ class RSU:
     def close_connection(self, conn):
         self.logger.debug(f'Connection losted with {conn}')
         self.selector.unregister(conn)
+        self.client_sockets.remove(conn)
         conn.close()
 
     def start(self):

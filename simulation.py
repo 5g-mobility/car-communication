@@ -74,7 +74,15 @@ def main():
 
                 # send information of the vehicle to the RSU
                 emulator_car_map[veh_id].forward_info_2_RSU()
-                #print(f'Car with id {veh_id} sent his data to RSU') 
+                #print(f'Car with id {veh_id} sent his data to RSU')
+            cars_to_delete = []
+            for vehicle in emulator_car_map:
+                if vehicle not in list_current_step_cars:
+                    print('closing socket with {}'.format(vehicle))
+                    emulator_car_map[vehicle].close()
+                    cars_to_delete.append(vehicle) 
+            for vehicle in cars_to_delete:
+                del emulator_car_map[vehicle] 
 
             traci.simulationStep()
 

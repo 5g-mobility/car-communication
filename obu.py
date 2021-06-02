@@ -58,6 +58,7 @@ class OBU:
 
     def close(self):
         """ Close communication with RSU """
+        self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
 
     def connect2OBD2(self, position, speed, co2Emissions):
@@ -123,16 +124,24 @@ class OBU:
     def receive_message(self):
         while True:
             # receive 4 bytes indicating the length of the message
-            payload_length = self.socket_receive_message(self.header)
+            try:
+                payload_length = self.socket_receive_message(self.header)
+            except socket.error:
+                break
 
             if payload_length:
-                # receive the expected message
-                payload = self.socket_receive_message(
-                    int.from_bytes(payload_length, byteorder='big'))
-
-                json_payload = json.loads(payload.decode('utf-8'))
-                if json_payload["vehicle_id"] != self.vehicle_id:
-                    print(f'Id {self.vehicle_id} received: Car Speeding -- vehicle id = {json_payload["vehicle_id"]}, speed = {json_payload["speed"]}')
+                try:
+                    # receive the expected message
+                    payload = self.socket_receive_message(
+                        int.from_bytes(payload_length, byteorder='big'))
+                except socket.error:
+                    break
+                if payload:
+                    json_payload = json.loads(payload.decode('utf-8'))
+                    if json_payload["vehicle_id"] != self.vehicle_id:
+                        print(f'Id {self.vehicle_id} received: Car Speeding -- vehicle id = {json_payload["vehicle_id"]}, speed = {json_payload["speed"]}')
+            else:
+                break
 
     def socket_receive_message(self, payload_length):
         payload = b''
