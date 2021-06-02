@@ -46,13 +46,13 @@ class RSU:
             mask: mascara
         """
         conn, addr = sock.accept()
-        self.logger.info(f'accepted {conn} from {addr}')
+        self.logger.info(f'\n Accepted {conn} from {addr}')
 
         conn.setblocking(False)  # impedir que bloqueie
         # registar a socket no selector
         self.selector.register(conn, selectors.EVENT_READ, self.read)
         self.client_sockets.append(conn)
-        self.logger.info(f'There are {len(self.client_sockets)} cars connected')
+        self.logger.info(f'There are {len(self.client_sockets)} cars connected\n')
 
     def close_socket(self, conn):
         """ fecha a ligação e remove os dados associados
