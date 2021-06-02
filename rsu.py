@@ -61,8 +61,8 @@ class RSU:
         """
         self.logger.info(f'closing {conn}')
 
-        self.selector.unregister(conn)
         self.client_sockets.remove(conn)
+        self.selector.unregister(conn)
         conn.close()
 
     def read(self, conn, mask):
@@ -145,8 +145,8 @@ class RSU:
 
     def close_connection(self, conn):
         self.logger.debug(f'Connection losted with {conn}')
-        self.selector.unregister(conn)
         self.client_sockets.remove(conn)
+        self.selector.unregister(conn)
         conn.close()
 
     def start(self):
