@@ -64,7 +64,7 @@ def main():
 
                     current_port = (current_port + 1) % MAX_PORT
 
-                    print(f'Currently, there are {max_cars} car(s) sending information to backend infrastructure.')
+                    #print(f'Currently, there are {max_cars} car(s) sending information to backend infrastructure.')
                     
                 else:
                     """ if the car was already initialized
