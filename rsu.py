@@ -52,6 +52,7 @@ class RSU:
         # registar a socket no selector
         self.selector.register(conn, selectors.EVENT_READ, self.read)
         self.client_sockets.append(conn)
+        self.logger.info(f'There are {len(self.client_sockets)} cars connected')
 
     def close_socket(self, conn):
         """ fecha a ligação e remove os dados associados
