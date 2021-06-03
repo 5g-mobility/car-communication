@@ -93,12 +93,17 @@ class RSU:
                 sock.send(
                     len(message).to_bytes(4, byteorder='big')
                 )
+                
+                time.sleep(0.001)
 
                 sock.send(
                     message
                 )
+
+                time.sleep(0.001)
             except Exception as e:
-                self.logger.error(f'Error: {e}')
+                pass
+                #self.logger.error(f'Error: {e}')
 
     def send_msg_2_broker(self, msg):
         #self.logger.info(f'Sending to broker: {msg}')
