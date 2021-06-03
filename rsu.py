@@ -177,6 +177,7 @@ class RSU:
             for key, mask in events:
                 callback = key.data
                 callback(key.fileobj, mask)
+                time.sleep(0.01)
 
     def start_server(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
