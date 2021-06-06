@@ -84,9 +84,9 @@ def main():
 
             traci.simulationStep()
 
-            # simulate the delay of 3 second
+            # simulate the delay of 15 second
             # cars should send data each second
-            time.sleep(3)
+            time.sleep(15)
 
         traci.close()
 
