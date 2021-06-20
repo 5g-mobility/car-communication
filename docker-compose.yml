@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+    rsu:
+        build:
+            context: .
+        entrypoint: ["sh", "./rsu/entrypoint.sh"]
+        restart: unless-stopped 
+        environment: 
+            - RSU_HOST=rsu
+        networks:
+            - rsu_network
+    simulation:
+        build:
+            context: .
+        entrypoint: ["sh", "./simulation/entrypoint.sh"]
+        restart: unless-stopped
+        environment: 
+            - RSU_HOST=rsu
+            - SUMO_HOME=/opt/sumo
+        depends_on:
+            - rsu
+        networks:
+            - rsu_network
+
+networks:
+    rsu_network:
+        name: rsu_network
